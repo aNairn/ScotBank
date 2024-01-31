@@ -1,79 +1,89 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
 package uk.co.asepstrath.bank;
 
-import uk.co.asepstrath.bank.example.ExampleController;
 import io.jooby.Jooby;
+import io.jooby.annotation.Path;
 import io.jooby.handlebars.HandlebarsModule;
 import io.jooby.helper.UniRestExtension;
 import io.jooby.hikari.HikariModule;
-import org.slf4j.Logger;
-
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import javax.sql.DataSource;
+import org.slf4j.Logger;
 
+@Path({"/example"})
 public class App extends Jooby {
+    List<Account> accounts = new ArrayList();
+    double[] accountAmounts = new double[]{50.0, 100.0, 76.0, 23.9, 3.0, 54.32};
+    String[] accountNames = new String[]{"Rachel", "Monica", "Phoebe", "Joey", "Chandler", "Ross"};
 
-    {
-        /*
-        This section is used for setting up the Jooby Framework modules
-         */
-        install(new UniRestExtension());
-        install(new HandlebarsModule());
-        install(new HikariModule("mem"));
-
-        /*
-        This will host any files in src/main/resources/assets on <host>/assets
-        For example in the dice template (dice.hbs) it references "assets/dice.png" which is in resources/assets folder
-         */
-        assets("/assets/*", "/assets");
-        assets("/service_worker.js","/service_worker.js");
-
-        /*
-        Now we set up our controllers and their dependencies
-         */
-        DataSource ds = require(DataSource.class);
-        Logger log = getLog();
-
-        mvc(new ExampleController(ds,log));
-
-        /*
-        Finally we register our application lifecycle methods
-         */
-        onStarted(() -> onStart());
-        onStop(() -> onStop());
+    public App() {
+        this.install(new UniRestExtension());
+        this.install(new HandlebarsModule());
+        this.install(new HikariModule("mem"));
+        this.assets("/assets/*", "/assets");
+        this.assets("/service_worker.js", "/service_worker.js");
+        DataSource ds = (DataSource)this.require(DataSource.class);
+        Logger log = this.getLog();
+        this.mvc(new AccountController(ds, log, this.accounts));
+        this.onStarted(() -> {
+            this.onStart();
+        });
+        this.onStop(() -> {
+            this.onStop();
+        });
     }
 
     public static void main(final String[] args) {
         runApp(args, App::new);
     }
 
-    /*
-    This function will be called when the application starts up,
-    it should be used to ensure that the DB is properly setup
-     */
     public void onStart() {
-        Logger log = getLog();
+        Logger log = this.getLog();
         log.info("Starting Up...");
 
-        // Fetch DB Source
-        DataSource ds = require(DataSource.class);
-        // Open Connection to DB
-        try (Connection connection = ds.getConnection()) {
-            //
-            Statement stmt = connection.createStatement();
-            stmt.executeUpdate("CREATE TABLE `Example` (`Key` varchar(255),`Value` varchar(255))");
-            stmt.executeUpdate("INSERT INTO Example " + "VALUES ('WelcomeMessage', 'Welcome to A Bank')");
-        } catch (SQLException e) {
-            log.error("Database Creation Error",e);
+        for(int i = 0; i < this.accountNames.length; ++i) {
+            this.accounts.add(new Account(this.accountNames[i], this.accountAmounts[i]));
         }
+
+        DataSource ds = (DataSource)this.require(DataSource.class);
+
+        try {
+            Connection connection = ds.getConnection();
+
+            try {
+                Statement stmt = connection.createStatement();
+                stmt.executeUpdate("CREATE TABLE `Example` (`Key` varchar(255),`Value` varchar(255))");
+                stmt.executeUpdate("INSERT INTO Example VALUES ('WelcomeMessage', 'Welcome to A Bank')");
+            } catch (Throwable var7) {
+                if (connection != null) {
+                    try {
+                        connection.close();
+                    } catch (Throwable var6) {
+                        var7.addSuppressed(var6);
+                    }
+                }
+
+                throw var7;
+            }
+
+            if (connection != null) {
+                connection.close();
+            }
+        } catch (SQLException var8) {
+            log.error("Database Creation Error", var8);
+        }
+
     }
 
-    /*
-    This function will be called when the application shuts down
-     */
     public void onStop() {
         System.out.println("Shutting Down...");
     }
-
 }
