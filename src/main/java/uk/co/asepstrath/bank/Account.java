@@ -33,4 +33,9 @@ public class Account {
     public double getBalance() {
         return this.balance;
     }
+
+    @Override
+    public String toString() {
+        return "Name: " + name + ", Balance: £" + balance;
+    }
 }
