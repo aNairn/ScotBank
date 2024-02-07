@@ -53,6 +53,8 @@ public class App extends Jooby {
             this.accounts.add(new Account(this.accountNames[i], this.accountAmounts[i]));
         }
 
+        //Results.html("accountTemplate").put("accounts",accounts);
+
         DataSource ds = (DataSource)this.require(DataSource.class);
 
         try {
