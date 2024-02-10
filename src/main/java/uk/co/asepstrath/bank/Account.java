@@ -5,13 +5,24 @@
 
 package uk.co.asepstrath.bank;
 
+import java.util.UUID;
+
 public class Account {
-    String name;
-    double balance;
+    private UUID id;
+    private String name;
+    private double balance;
+    private boolean roundUpEnabled;
 
     public Account(String name, double accountAmount) {
         this.name = name;
         this.balance = accountAmount;
+    }
+
+    public Account(UUID id, String name, double startingBalance, boolean roundUpEnabled) {
+        this.id = id;
+        this.name = name;
+        this.balance = startingBalance;
+        this.roundUpEnabled = roundUpEnabled;
     }
 
     public void deposit(double amount) {
@@ -36,6 +47,6 @@ public class Account {
 
     @Override
     public String toString() {
-        return "Name: " + name + ", Balance: £" + balance;
+        return "ID: " + id + " Name: " + name + ", Balance: £" + balance + ", Round Up Enabled: " + roundUpEnabled;
     }
 }
