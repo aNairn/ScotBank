@@ -29,8 +29,8 @@ import java.util.UUID;
 @Path({"/example"})
 public class App extends Jooby {
     List<Account> accounts = new ArrayList();
-    double[] accountAmounts = new double[]{50.0, 100.0, 76.0, 23.9, 3.0, 54.32};
-    String[] accountNames = new String[]{"Rachel", "Monica", "Phoebe", "Joey", "Chandler", "Ross"};
+    //double[] accountAmounts = new double[]{50.0, 100.0, 76.0, 23.9, 3.0, 54.32};
+    //String[] accountNames = new String[]{"Rachel", "Monica", "Phoebe", "Joey", "Chandler", "Ross"};
 
     public App() {
         this.install(new UniRestExtension());
@@ -96,9 +96,9 @@ public class App extends Jooby {
         Logger log = this.getLog();
         log.info("Starting Up...");
 
-        for(int i = 0; i < this.accountNames.length; ++i) {
-            this.accounts.add(new Account(this.accountNames[i], this.accountAmounts[i]));
-        }
+        //for(int i = 0; i < this.accountNames.length; ++i) {
+          //  this.accounts.add(new Account(this.accountNames[i], this.accountAmounts[i]));
+        //}
 
         //Results.html("accountTemplate").put("accounts",accounts);
         // Print the accounts list

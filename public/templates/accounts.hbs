@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Account Data</title>
+</head>
+<body>
+<table>
+    <tr>
+        <th>Firstname</th>
+        <th>Lastname</th>
+        <th>Age</th>
+    </tr>
+    {{#each this}}
+    <tr>
+        <td>{{firstname}}</td>
+        <td>{{lastname}}</td>
+        <td>{{age}}</td>
+    </tr>
+    {{/each}}
+</table>
+</body>
+</html>
