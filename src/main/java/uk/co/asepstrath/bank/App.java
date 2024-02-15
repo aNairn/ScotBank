@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.sql.DataSource;
 import org.json.JSONArray;
@@ -28,7 +29,7 @@ import java.util.UUID;
 
 @Path({"/example"})
 public class App extends Jooby {
-    List<Account> accounts = new ArrayList();
+    private final List<Account> accounts = Collections.synchronizedList(new ArrayList<>());
     //double[] accountAmounts = new double[]{50.0, 100.0, 76.0, 23.9, 3.0, 54.32};
     //String[] accountNames = new String[]{"Rachel", "Monica", "Phoebe", "Joey", "Chandler", "Ross"};
 
@@ -50,20 +51,22 @@ public class App extends Jooby {
     }
 
     public void importAccDataFromAPI(String apiUrl){
-        try{
-            //Create HttpClient
-            HttpClient client = HttpClient.newHttpClient();
-            //Creare GET request
-            HttpRequest request = HttpRequest.newBuilder().uri(URI.create(apiUrl)).header("Accept", "application/json").build();
-            //Send/Receive
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            if(response.statusCode() == 200){
-                JSONArray jsonArray = new JSONArray(new JSONTokener(response.body()));
-                System.out.println("API Response:\n" + response.body());
 
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject accountJson = jsonArray.getJSONObject(i);
+            try {
+                //Create HttpClient
+                HttpClient client = HttpClient.newHttpClient();
+                //Creare GET request
+                HttpRequest request = HttpRequest.newBuilder().uri(URI.create(apiUrl)).header("Accept", "application/json").build();
+                //Send/Receive
+                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+                if (response.statusCode() == 200) {
+                    JSONArray jsonArray = new JSONArray(new JSONTokener(response.body()));
+                    System.out.println("API Response:\n" + response.body());
+
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject accountJson = jsonArray.getJSONObject(i);
 
                         String id = accountJson.getString("id");
                         String name = accountJson.getString("name");
@@ -71,20 +74,23 @@ public class App extends Jooby {
                         boolean roundUpEnabled = accountJson.getBoolean("roundUpEnabled");
                         // Create an Account object using the constructor for API data
                         Account account = new Account(UUID.fromString(id), name, startingBalance, roundUpEnabled);
-                    System.out.println("Parsed JSON Array:\n" + jsonArray);
+                        System.out.println("Parsed JSON Array:\n" + jsonArray);
 
                         // Add the account to your accounts list
                         accounts.add(account);
-                    System.out.println("Adding account: " + account);
+                        System.out.println("Adding account: " + accounts.get(i));
                     }
-            }else{
-                throw new Error("Failed to fetch data from the API. HTTP status code: " + response.statusCode());
-            }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+
+                } else {
+                    throw new Error("Failed to fetch data from the API. HTTP status code: " + response.statusCode());
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-    }
+
 
     public static void main(final String[] args) {
         App app = new App();
