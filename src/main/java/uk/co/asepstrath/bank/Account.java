@@ -9,7 +9,10 @@ import java.util.UUID;
 
 public class Account {
     private UUID id;
+
+    private String sortCode;
     private String name;
+    private String surname;
     private double balance;
     private boolean roundUpEnabled;
 
@@ -18,9 +21,11 @@ public class Account {
         this.balance = accountAmount;
     }
 
-    public Account(UUID id, String name, double startingBalance, boolean roundUpEnabled) {
+    public Account(UUID id, String sortCode, String name, String surname, double startingBalance, boolean roundUpEnabled) {
         this.id = id;
+        this.sortCode = sortCode;
         this.name = name;
+        this.surname = surname;
         this.balance = startingBalance;
         this.roundUpEnabled = roundUpEnabled;
     }

@@ -29,8 +29,15 @@ import java.util.UUID;
 @Path({"/example"})
 public class App extends Jooby {
     List<Account> accounts = new ArrayList();
-    double[] accountAmounts = new double[]{50.0, 100.0, 76.0, 23.9, 3.0, 54.32};
-    String[] accountNames = new String[]{"Rachel", "Monica", "Phoebe", "Joey", "Chandler", "Ross"};
+
+    List<UUID> accountNo = new ArrayList();
+    List<String> sortCode = new ArrayList();
+
+    List<Double> accountAmounts = new ArrayList(); //= new double[]{50.0, 100.0, 76.0, 23.9, 3.0, 54.32}
+    List<String> accountNames = new ArrayList(); //= new String[]{"Rachel", "Monica", "Phoebe", "Joey", "Chandler", "Ross"};
+    List<String> accountSurnames = new ArrayList();
+
+
 
     public App() {
         this.install(new UniRestExtension());
@@ -66,11 +73,13 @@ public class App extends Jooby {
                     JSONObject accountJson = jsonArray.getJSONObject(i);
 
                         String id = accountJson.getString("id");
+                        String thisSortCode = accountJson.getString("sortCode");
                         String name = accountJson.getString("name");
+                        String surname = accountJson.getString("surname");
                         double startingBalance = accountJson.getDouble("startingBalance");
                         boolean roundUpEnabled = accountJson.getBoolean("roundUpEnabled");
                         // Create an Account object using the constructor for API data
-                        Account account = new Account(UUID.fromString(id), name, startingBalance, roundUpEnabled);
+                        Account account = new Account(UUID.fromString(id), thisSortCode, name, surname, startingBalance, roundUpEnabled);
                     System.out.println("Parsed JSON Array:\n" + jsonArray);
 
                         // Add the account to your accounts list
@@ -96,16 +105,7 @@ public class App extends Jooby {
         Logger log = this.getLog();
         log.info("Starting Up...");
 
-        for(int i = 0; i < this.accountNames.length; ++i) {
-            this.accounts.add(new Account(this.accountNames[i], this.accountAmounts[i]));
-        }
 
-        //Results.html("accountTemplate").put("accounts",accounts);
-        // Print the accounts list
-        System.out.println("Accounts after importing from API:");
-        for (Account account : accounts) {
-            System.out.println(account);
-        }
 
         DataSource ds = (DataSource)this.require(DataSource.class);
 
@@ -114,8 +114,21 @@ public class App extends Jooby {
 
             try {
                 Statement stmt = connection.createStatement();
-                stmt.executeUpdate("CREATE TABLE `Example` (`Key` varchar(255),`Value` varchar(255))");
-                stmt.executeUpdate("INSERT INTO Example VALUES ('WelcomeMessage', 'Welcome to A Bank')");
+                stmt.executeUpdate("CREATE TABLE `Account` (`AccountNo` char(8), `SortCode` char(6), `FirstName` varchar(50), `Surname` varchar(50), `balance` double(10,2))");
+               // stmt.executeUpdate("INSERT INTO Example VALUES ('WelcomeMessage', 'Welcome to A Bank')");
+
+                for(int i = 0; i < this.accountNames.size(); ++i) {
+                    //this.accounts.add(new Account(accountNo.get(i), sortCode.get(i), accountNames.get(i), accountSurnames.get(i), accountAmounts.get(i), roundUpEnabled));
+                    stmt.executeUpdate("INSERT INTO Account VALUES("+ accountNo.get(i) + ", " + sortCode.get(i) + ", " + accountNames.get(i) +", " + accountSurnames.get(i) + ", " + accountAmounts.get(i) + ")");
+                }
+
+                //Results.html("accountTemplate").put("accounts",accounts);
+                // Print the accounts list
+                System.out.println("Accounts after importing from API:");
+                for (Account account : accounts) {
+                    stmt.executeUpdate("SELECT * FROM Account WHERE AccountNo = " + accountNo +"");
+                    System.out.println(account);
+                }
             } catch (Throwable var7) {
                 if (connection != null) {
                     try {
