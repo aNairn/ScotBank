@@ -119,14 +119,14 @@ public class App extends Jooby {
 
                 for(int i = 0; i < this.accountNames.size(); ++i) {
                     //this.accounts.add(new Account(accountNo.get(i), sortCode.get(i), accountNames.get(i), accountSurnames.get(i), accountAmounts.get(i), roundUpEnabled));
-                    stmt.executeUpdate("INSERT INTO Account VALUES("+ accountNo.get(i) + ", " + sortCode.get(i) + ", " + accountNames.get(i) +", " + accountSurnames.get(i) + ", " + accountAmounts.get(i) + ")");
+                   stmt.executeUpdate("INSERT INTO Account VALUES('+ accountNo.get(i) + ', ' + sortCode.get(i) + ', ' + accountNames.get(i) +', ' + accountSurnames.get(i) + ', ' + accountAmounts.get(i) +' )");
                 }
 
                 //Results.html("accountTemplate").put("accounts",accounts);
                 // Print the accounts list
                 System.out.println("Accounts after importing from API:");
                 for (Account account : accounts) {
-                    stmt.executeUpdate("SELECT * FROM Account WHERE AccountNo = " + accountNo +"");
+                    stmt.executeUpdate("SELECT * FROM Account WHERE AccountNo = ' + accountNo +'");
                     System.out.println(account);
                 }
             } catch (Throwable var7) {
