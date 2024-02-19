@@ -3,6 +3,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import java.util.UUID;
 
 public class AccountTests {
 
@@ -59,7 +60,35 @@ public class AccountTests {
             a.deposit(17.56);
 
             assertTrue(a.getBalance() == 23.01);
-
         }
 
+    @Test
+    public void testAccCon() {
+        // Given
+        UUID accountId = UUID.randomUUID();
+        String accountName = "TestAccount";
+        double startingBalance = 100.0;
+        boolean roundUpEnabled = true;
+
+        // When
+        Account account = new Account(accountId, accountName, startingBalance, roundUpEnabled);
+
+        // Then
+        assertNotNull(account);
+        assertEquals(accountId, account.getId());
+        assertEquals(accountName, account.getName());
+        assertEquals(startingBalance, account.getBalance());
+        assertEquals(roundUpEnabled, account.isRoundUpEnabled());
+    }
+
+
+
+
+    @Test
+    public void importAccounts(){
+        App app = new App();
+        String apiUrl = "https://api.asep-strath.co.uk/api/accounts";
+        app.importAccDataFromAPI(apiUrl);
+        assertFalse(app.accounts.isEmpty());
+    }
 }

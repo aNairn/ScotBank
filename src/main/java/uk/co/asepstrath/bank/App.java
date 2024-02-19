@@ -96,8 +96,8 @@ public class App extends Jooby {
         Logger log = this.getLog();
         log.info("Starting Up...");
 
-        //for(int i = 0; i < this.accountNames.length; ++i) {
-          //  this.accounts.add(new Account(this.accountNames[i], this.accountAmounts[i]));
+       // for(int i = 0; i < this.accountNames.length; i++) {
+         //   this.accounts.add(new Account(this.accountNames[i], this.accountAmounts[i]));
         //}
 
         //Results.html("accountTemplate").put("accounts",accounts);
