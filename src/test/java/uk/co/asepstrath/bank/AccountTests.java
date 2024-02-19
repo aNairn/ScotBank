@@ -89,6 +89,6 @@ public class AccountTests {
         App app = new App();
         String apiUrl = "https://api.asep-strath.co.uk/api/accounts";
         app.importAccDataFromAPI(apiUrl);
-        assertFalse(app.accounts.isEmpty());
+        assertFalse(app.getAccounts().isEmpty());
     }
 }

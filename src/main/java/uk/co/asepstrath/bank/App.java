@@ -91,6 +91,9 @@ public class App extends Jooby {
             }
         }
 
+    public List<Account> getAccounts() {
+        return Collections.unmodifiableList(accounts);
+    }
 
     public static void main(final String[] args) {
         App app = new App();
