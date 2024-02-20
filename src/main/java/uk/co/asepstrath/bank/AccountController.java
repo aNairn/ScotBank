@@ -39,12 +39,12 @@ public class AccountController {
         this.accounts = accounts;
         this.transactions = new ArrayList<>();
         // Fill the transactions list with sample transactions
-        transactions.add(new Transaction("Tesco", 100.0, "Supermarket"));
-        transactions.add(new Transaction("Asda", 200.0, "Supermarket"));
-        transactions.add(new Transaction("Sainsburys", 300.0, "Supermarket"));
-        transactions.add(new Transaction("Costco", 10000.0, "Wholesaler"));
-        transactions.add(new Transaction("EE", 30.0, "Technology"));
-        transactions.add(new Transaction("O2", 45.0, "Technology"));
+        transactions.add(new Transaction("Tesco", 100.0, "Supermarket", "ABCD123", "19/02/24"));
+        transactions.add(new Transaction("Asda", 200.0, "Supermarket", "DCE345","22/12/23"));
+        transactions.add(new Transaction("Sainsburys", 300.0, "Supermarket", "AED321","22/10/23"));
+        transactions.add(new Transaction("Costco", 10000.0, "Wholesaler", "DEC367","22/09/23"));
+        transactions.add(new Transaction("EE", 30.0, "Technology", "OUI455","22/10/22"));
+        transactions.add(new Transaction("O2", 45.0, "Technology", "CDF900","22/01/22"));
 
 
 
@@ -173,6 +173,26 @@ public class AccountController {
         }
 
         return spendingSummary;
+    }
+    @GET("/transactionsDetails")
+    public String getTransactionDetailsPage(Context ctx) throws IOException {
+        String transactionId = ctx.query("transactionId").value();
+        Transaction transaction = findTransactionById(transactionId);
+        Template template = handlebars.compile("templates/transactionDetails");
+        Map<String, Object> model = new HashMap<>();
+        model.put("transaction", transaction);
+        String html = template.apply(model);
+        ctx.setResponseType(MediaType.text.html);
+        return html;
+    }
+
+    private Transaction findTransactionById(String transactionId) {
+        for (Transaction transaction : transactions) {
+            if (transaction.getTransactionID().equals(transactionId)) {
+                return transaction;
+            }
+        }
+        return null;
     }
 
 }
