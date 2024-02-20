@@ -50,7 +50,7 @@ public class AccountController {
         ctx.setResponseType(MediaType.text.html);
         return html;
     }
-    @GET({"/homepage"})
+    @GET({"/transactions"})
     public String getHomePage(Context ctx) throws IOException {
 
 
@@ -59,7 +59,7 @@ public class AccountController {
         String username = ctx.session().get("fromPost").value();
 
         // Render the homepage template with the username
-        Template template = handlebars.compile("templates/homepage");
+        Template template = handlebars.compile("templates/transactions");
 
         // Create a model object with the username
         Map<String, Object> model = new HashMap<>();
@@ -106,6 +106,6 @@ public class AccountController {
         ctx.session().put("fromPost", username);
 
         // Redirect to the homepage
-        ctx.sendRedirect("/homepage");
+        ctx.sendRedirect("/transactions");
     }
 }

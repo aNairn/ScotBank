@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full-width Navigation Bar</title>
+    <style>
+        /* Styles for the navigation bar */
+        /* Style the navigation menu */
+.navbar {
+  width: 100%;
+  background-color: #555;
+  overflow: auto;
+  display: flex;
+  justify-content: center;
+}
+
+/* Navigation links */
+.navbar a {
+  float: left;
+  padding: 12px;
+  color: white;
+  text-decoration: none;
+  font-size: 17px;
+  width: 33.33%; /* Four equal-width links. If you have two links, use 50%, and 33.33% for three links, etc.. */
+  text-align: center; /* If you want the text to be centered */
+}
+
+/* Add a background color on mouse-over */
+.navbar a:hover {
+  background-color: #000;
+}
+
+/* Style the current/active link */
+
+
+/* Add responsiveness - on screens less than 500px, make the navigation links appear on top of each other, instead of next to each other */
+@media screen and (max-width: 500px) {
+  .navbar a {
+    float: none;
+    display:inline-block; ;
+    width: 100%;
+
+    text-align: center; /* If you want the text to be left-aligned on small screens */
+  }
+}
+        /* Additional styles to make the page look better */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0; /* Remove default margin */
+            padding: 0; /* Remove default padding */
+        }
+
+        .content-transactions {
+            padding: 20px; /* Add padding to content area */
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <a href="#">Account</a>
+    <a href="#">Transactions</a>
+    <a href="#">Spending</a>
+
+</div>
+
+<div class="transactions-content">
+    <div class ="transactions-header">
+        Here are your transactions
+    </div>
+    <div class="transactions-list">
+
+    </div>
+
+</div>
+
+</body>
+<script src="scotbank1/public/js/script.js" ></script>
+
+</html>
