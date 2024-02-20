@@ -18,11 +18,16 @@ import java.util.Map;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
 
+
+
 @Path({"/"})
 public class AccountController {
+    private final List<Transaction> transactions;
+
     private final DataSource dataSource;
     private final Logger logger;
     private final List<Account> accounts;
+
 
     private Handlebars handlebars;
 
@@ -32,14 +37,23 @@ public class AccountController {
         this.dataSource = ds;
         this.logger = log;
         this.accounts = accounts;
+        this.transactions = new ArrayList<>();
+        // Fill the transactions list with sample transactions
+        transactions.add(new Transaction("Tesco", 100.0, "Supermarket"));
+        transactions.add(new Transaction("Asda", 200.0, "Supermarket"));
+        transactions.add(new Transaction("Sainsburys", 300.0, "Supermarket"));
+        transactions.add(new Transaction("Costco", 10000.0, "Wholesaler"));
+        transactions.add(new Transaction("EE", 30.0, "Technology"));
+        transactions.add(new Transaction("O2", 45.0, "Technology"));
+
+
+
         this.handlebars = new Handlebars();
+
     }
 
     @GET("/")
     public String getLoginPage(Context ctx) throws IOException {
-
-
-
 
             Template template = handlebars.compile("templates/login");
 
@@ -50,7 +64,7 @@ public class AccountController {
         ctx.setResponseType(MediaType.text.html);
         return html;
     }
-    @GET({"/transactions"})
+    @GET({"/homepage"})
     public String getHomePage(Context ctx) throws IOException {
 
 
@@ -59,7 +73,7 @@ public class AccountController {
         String username = ctx.session().get("fromPost").value();
 
         // Render the homepage template with the username
-        Template template = handlebars.compile("templates/transactions");
+        Template template = handlebars.compile("templates/homepage");
 
         // Create a model object with the username
         Map<String, Object> model = new HashMap<>();
@@ -106,6 +120,59 @@ public class AccountController {
         ctx.session().put("fromPost", username);
 
         // Redirect to the homepage
-        ctx.sendRedirect("/transactions");
+        ctx.sendRedirect("/homepage");
     }
+
+    @GET("/transactions")
+    public String getTransactionsPage(Context ctx) throws IOException {
+        // Render the transactions page template with the transactions data
+        Template template = handlebars.compile("templates/transactions");
+
+        // Create a model object with the transactions data
+        Map<String, Object> model = new HashMap<>();
+        model.put("transactions", transactions);
+
+        String html = template.apply(model);
+
+        // Set response type and return HTML
+        ctx.setResponseType(MediaType.text.html);
+        return html;
+    }
+    @GET("/spending")
+    public String getSpendingPage(Context ctx) throws IOException {
+        String username = ctx.session().get("fromPost").value();
+
+        // Calculate spending summary
+        Map<String, Double> spendingSummary = calculateSpendingSummary();
+
+        // Render the spending page template with the spending summary and username
+        Template template = handlebars.compile("templates/spending");
+
+        // Create a model object with the spending summary and username
+        Map<String, Object> model = new HashMap<>();
+        model.put("fromPost", username);
+        model.put("spendingSummary", spendingSummary);
+
+        String html = template.apply(model);
+
+        // Set response type and return HTML
+        ctx.setResponseType(MediaType.text.html);
+        return html;
+    }
+
+    private Map<String, Double> calculateSpendingSummary() {
+        Map<String, Double> spendingSummary = new HashMap<>();
+
+        // Iterate through transactions and categorize spending
+        for (Transaction transaction : transactions) {
+            String category = transaction.getCategory(); // Assuming Transaction class has getCategory method
+            double amount = transaction.getAmount(); // Assuming Transaction class has getAmount method
+
+            // Update spending summary
+            spendingSummary.put(category, spendingSummary.getOrDefault(category, 0.0) + amount);
+        }
+
+        return spendingSummary;
+    }
+
 }
