@@ -91,6 +91,9 @@ public class App extends Jooby {
             }
         }
 
+    public List<Account> getAccounts() {
+        return Collections.unmodifiableList(accounts);
+    }
 
     public static void main(final String[] args) {
         App app = new App();
@@ -102,8 +105,8 @@ public class App extends Jooby {
         Logger log = this.getLog();
         log.info("Starting Up...");
 
-        //for(int i = 0; i < this.accountNames.length; ++i) {
-          //  this.accounts.add(new Account(this.accountNames[i], this.accountAmounts[i]));
+       // for(int i = 0; i < this.accountNames.length; i++) {
+         //   this.accounts.add(new Account(this.accountNames[i], this.accountAmounts[i]));
         //}
 
         //Results.html("accountTemplate").put("accounts",accounts);
