@@ -91,6 +91,54 @@ class TransactionTest {
     }
 
     @Test
+    void testTransactionID() {
+        // Arrange
+        Transaction transaction = new Transaction("", 1000,"","","");
+        String expectedTransactionID = "XYZ789";
+
+        // Act
+        transaction.setTransactionID(expectedTransactionID);
+        String actualTransactionID = transaction.getTransactionID();
+
+        // Assert
+        assertEquals(expectedTransactionID, actualTransactionID);
+    }
+
+    @Test
+    void testDate() {
+        // Arrange
+        Transaction transaction = new Transaction("", 1000,"","","");
+        String expectedDate = "2022-02-22";
+
+        // Act
+        transaction.setDate(expectedDate);
+        String actualDate = transaction.getDate();
+
+        // Assert
+        assertEquals(expectedDate, actualDate);
+    }
+
+    @Test
+    void testParameterizedConstructor() {
+        // Arrange
+        String description = "Test Description";
+        double amount = 100.50;
+        String category = "Test Category";
+        String transactionID = "ABC123";
+        String date = "2022-02-21";
+
+        // Act
+        Transaction transaction = new Transaction(description, amount, category, transactionID, date);
+
+        // Assert
+        assertEquals(description, transaction.getDescription());
+        assertEquals(amount, transaction.getAmount(), 0.001); // Using delta for double comparison
+        assertEquals(category, transaction.getCategory());
+        assertEquals(transactionID, transaction.getTransactionID());
+        assertEquals(date, transaction.getDate());
+    }
+
+    @Test
     void testToString() {
         // Arrange
         Transaction transaction = new Transaction("", 1000,"","","");
