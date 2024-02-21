@@ -62,7 +62,7 @@ public class Transaction {
                 "ID: " + transactionID + ' ' +
                 "Category: " + category + ' ' +
                 "Business: " + description + ' ' +
-                "Amount: " + amount +
+                "Amount: " + amount + ' ' +
                 "Date: " + date;
     }
 }

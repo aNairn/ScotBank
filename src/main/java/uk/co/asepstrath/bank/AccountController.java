@@ -30,7 +30,7 @@ public class AccountController {
     private final List<Account> accounts;
 
 
-    private Handlebars handlebars;
+    public Handlebars handlebars;
 
 
 
