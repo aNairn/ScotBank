@@ -9,7 +9,7 @@ class TransactionTest {
     @Test
     void getDescription() {
         // Arrange
-        Transaction transaction = new Transaction("", 1000,"");
+        Transaction transaction = new Transaction("", 1000,"","","");
         String expectedDescription = "Test Description";
         transaction.setDescription(expectedDescription);
 
@@ -23,7 +23,7 @@ class TransactionTest {
     @Test
     void setDescription() {
         // Arrange
-        Transaction transaction = new Transaction("", 1000,"");
+        Transaction transaction = new Transaction("", 1000,"","","");
         String expectedDescription = "Test Description";
 
         // Act
@@ -37,7 +37,7 @@ class TransactionTest {
     @Test
     void getAmount() {
         // Arrange
-        Transaction transaction = new Transaction("", 1000,"");
+        Transaction transaction = new Transaction("", 1000,"","","");
         double expectedAmount = 100.50;
         transaction.setAmount(expectedAmount);
 
@@ -51,7 +51,7 @@ class TransactionTest {
     @Test
     void setAmount() {
         // Arrange
-        Transaction transaction = new Transaction("", 1000,"");
+        Transaction transaction = new Transaction("", 1000,"","","");
         double expectedAmount = 100.50;
 
         // Act
@@ -65,7 +65,7 @@ class TransactionTest {
     @Test
     void getCategory() {
         // Arrange
-        Transaction transaction = new Transaction("", 1000,"");
+        Transaction transaction = new Transaction("", 1000,"","","");
         String expectedCategory = "Test Category";
         transaction.setCategory(expectedCategory);
 
@@ -79,7 +79,7 @@ class TransactionTest {
     @Test
     void setCategory() {
         // Arrange
-        Transaction transaction = new Transaction("", 1000,"");
+        Transaction transaction = new Transaction("", 1000,"","","");
         String expectedCategory = "Test Category";
 
         // Act
@@ -93,7 +93,7 @@ class TransactionTest {
     @Test
     void testToString() {
         // Arrange
-        Transaction transaction = new Transaction("", 1000,"");
+        Transaction transaction = new Transaction("", 1000,"","","");
         transaction.setDescription("Test Description");
         transaction.setAmount(100.50);
         transaction.setCategory("Test Category");
