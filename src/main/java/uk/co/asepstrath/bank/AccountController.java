@@ -60,7 +60,7 @@ public class AccountController {
     @GET("/")
     public String getLoginPage(Context ctx) throws IOException {
 
-        Template template = handlebars.compile("templates/login");
+        Template template = handlebars.compile("/login");
 
 
         String html = template.apply(accounts);
