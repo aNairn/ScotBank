@@ -8,7 +8,6 @@ import io.jooby.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 import io.jooby.MediaType;
-import io.jooby.StatusCode;
 import io.jooby.annotation.*;
 
 import java.io.IOException;
@@ -40,21 +39,17 @@ public class AccountController {
         this.accounts = accounts;
         this.transactions = new ArrayList<>();
         // Fill the transactions list with sample transactions
-        transactions.add(new Transaction("Tesco", 100.00, "Supermarket", "ABCD123", "19/02/24"));
-        transactions.add(new Transaction("Asda", 200.00, "Supermarket", "DCE345","22/12/23"));
-        transactions.add(new Transaction("Sainsburys", 300.00, "Supermarket", "AED321","22/10/23"));
-        transactions.add(new Transaction("Costco", 10000.00, "Wholesaler", "DEC367","22/09/23"));
-        transactions.add(new Transaction("EE", 30.00, "Technology", "OUI455","22/10/22"));
-        transactions.add(new Transaction("O2", 45.00, "Technology", "CDF900","22/01/22"));
+        transactions.add(new Transaction("Tesco", 100.0, "Supermarket"));
+        transactions.add(new Transaction("Asda", 200.0, "Supermarket"));
+        transactions.add(new Transaction("Sainsburys", 300.0, "Supermarket"));
+        transactions.add(new Transaction("Costco", 10000.0, "Wholesaler"));
+        transactions.add(new Transaction("EE", 30.0, "Technology"));
+        transactions.add(new Transaction("O2", 45.0, "Technology"));
 
 
 
         this.handlebars = new Handlebars();
 
-    }
-
-    public Handlebars getHandlebars() {
-        return this.handlebars;
     }
 
     @GET("/")
@@ -69,24 +64,20 @@ public class AccountController {
         ctx.setResponseType(MediaType.text.html);
         return html;
     }
-    @GET("/homepage")
+    @GET({"/homepage"})
     public String getHomePage(Context ctx) throws IOException {
+
+
+
+/// Retrieve the username from the session
         String username = ctx.session().get("fromPost").value();
 
-        // Retrieve account details (replace these with actual values from your system)
-        double amount = 10201.00;
-        String sortCode = "12-34-56";
-        String accountNumber = "12345678";
-
-        // Render the homepage template with the username and account details
+        // Render the homepage template with the username
         Template template = handlebars.compile("templates/homepage");
 
-        // Create a model object with the username and account details
+        // Create a model object with the username
         Map<String, Object> model = new HashMap<>();
         model.put("fromPost", username);
-        model.put("amount", amount);
-        model.put("sortCode", sortCode);
-        model.put("accountNumber", accountNumber);
 
         String html = template.apply(model);
 
@@ -125,21 +116,13 @@ public class AccountController {
     public void handleLoginFormSubmission(Context ctx) throws IOException {
         String username = ctx.form("username").value();
 
-        // Check if username is not empty before storing it in the session
-        if (username != null && !username.isEmpty()) {
-            // Store the username in the session
-            ctx.session().put("fromPost", username);
+        // Store the username in the session
+        ctx.session().put("fromPost", username);
 
-            // Redirect to the homepage
-            ctx.sendRedirect("/homepage");
-        } else {
-            // Handle the case when username is empty
-            String errorMessage = "Error: Username cannot be empty";
-            ctx.setResponseType(MediaType.TEXT);
-            ctx.setResponseCode(StatusCode.BAD_REQUEST);
-            ctx.send(errorMessage);
-        }
+        // Redirect to the homepage
+        ctx.sendRedirect("/homepage");
     }
+
     @GET("/transactions")
     public String getTransactionsPage(Context ctx) throws IOException {
         // Render the transactions page template with the transactions data
@@ -190,26 +173,6 @@ public class AccountController {
         }
 
         return spendingSummary;
-    }
-    @GET("/transactionsDetails")
-    public String getTransactionDetailsPage(Context ctx) throws IOException {
-        String transactionId = ctx.query("transactionId").value();
-        Transaction transaction = findTransactionById(transactionId);
-        Template template = handlebars.compile("templates/transactionDetails");
-        Map<String, Object> model = new HashMap<>();
-        model.put("transaction", transaction);
-        String html = template.apply(model);
-        ctx.setResponseType(MediaType.text.html);
-        return html;
-    }
-
-    private Transaction findTransactionById(String transactionId) {
-        for (Transaction transaction : transactions) {
-            if (transaction.getTransactionID().equals(transactionId)) {
-                return transaction;
-            }
-        }
-        return null;
     }
 
 }
