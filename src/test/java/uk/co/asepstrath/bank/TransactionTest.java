@@ -9,7 +9,7 @@ class TransactionTest {
     @Test
     void getDescription() {
         // Arrange
-        Transaction transaction = new Transaction("", 1000,"","","");
+        Transaction transaction = new Transaction("", 1000,"","","","","");
         String expectedDescription = "Test Description";
         transaction.setDescription(expectedDescription);
 
@@ -23,7 +23,7 @@ class TransactionTest {
     @Test
     void setDescription() {
         // Arrange
-        Transaction transaction = new Transaction("", 1000,"","","");
+        Transaction transaction = new Transaction("", 1000,"","","","","");
         String expectedDescription = "Test Description";
 
         // Act
@@ -37,7 +37,7 @@ class TransactionTest {
     @Test
     void getAmount() {
         // Arrange
-        Transaction transaction = new Transaction("", 1000,"","","");
+        Transaction transaction = new Transaction("", 1000,"","","","","");
         double expectedAmount = 100.50;
         transaction.setAmount(expectedAmount);
 
@@ -51,7 +51,7 @@ class TransactionTest {
     @Test
     void setAmount() {
         // Arrange
-        Transaction transaction = new Transaction("", 1000,"","","");
+        Transaction transaction = new Transaction("", 1000,"","","","","");
         double expectedAmount = 100.50;
 
         // Act
@@ -65,7 +65,7 @@ class TransactionTest {
     @Test
     void getCategory() {
         // Arrange
-        Transaction transaction = new Transaction("", 1000,"","","");
+        Transaction transaction = new Transaction("", 1000,"","","","","");
         String expectedCategory = "Test Category";
         transaction.setCategory(expectedCategory);
 
@@ -79,7 +79,7 @@ class TransactionTest {
     @Test
     void setCategory() {
         // Arrange
-        Transaction transaction = new Transaction("", 1000,"","","");
+        Transaction transaction = new Transaction("", 1000,"","","","","");
         String expectedCategory = "Test Category";
 
         // Act
@@ -93,7 +93,7 @@ class TransactionTest {
     @Test
     void testTransactionID() {
         // Arrange
-        Transaction transaction = new Transaction("", 1000,"","","");
+        Transaction transaction = new Transaction("", 1000,"","","","","");
         String expectedTransactionID = "XYZ789";
 
         // Act
@@ -107,7 +107,7 @@ class TransactionTest {
     @Test
     void testDate() {
         // Arrange
-        Transaction transaction = new Transaction("", 1000,"","","");
+        Transaction transaction = new Transaction("", 1000,"","","","","");
         String expectedDate = "2022-02-22";
 
         // Act
@@ -119,6 +119,34 @@ class TransactionTest {
     }
 
     @Test
+    void testType() {
+        // Arrange
+        Transaction transaction = new Transaction("", 1000,"","","","","");
+        String expectedType = "Payment";
+
+        // Act
+        transaction.setDate(expectedType);
+        String actualDate = transaction.getDate();
+
+        // Assert
+        assertEquals(expectedType, actualDate);
+    }
+
+    @Test
+    void testAccountUsed() {
+        // Arrange
+        Transaction transaction = new Transaction("", 1000,"","","","","");
+        String expectedAccountUsed = "12345678";
+
+        // Act
+        transaction.setDate(expectedAccountUsed);
+        String actualDate = transaction.getDate();
+
+        // Assert
+        assertEquals(expectedAccountUsed, actualDate);
+    }
+
+    @Test
     void testParameterizedConstructor() {
         // Arrange
         String description = "Test Description";
@@ -126,9 +154,11 @@ class TransactionTest {
         String category = "Test Category";
         String transactionID = "ABC123";
         String date = "2022-02-21";
+        String type = "Payment";
+          String accountUsed = "12345678";
 
         // Act
-        Transaction transaction = new Transaction(description, amount, category, transactionID, date);
+        Transaction transaction = new Transaction(description, amount, category, transactionID, date, type, accountUsed);
 
         // Assert
         assertEquals(description, transaction.getDescription());
@@ -141,7 +171,7 @@ class TransactionTest {
     @Test
     void testToString() {
         // Arrange
-        Transaction transaction = new Transaction("", 1000,"","","");
+        Transaction transaction = new Transaction("", 1000,"","","","","");
         transaction.setDescription("Test Description");
         transaction.setAmount(100.50);
         transaction.setCategory("Test Category");

@@ -2,18 +2,23 @@ package uk.co.asepstrath.bank;
 
 
 public class Transaction {
+    private String type;
+    private  String accountUsed;
     private String transactionID;
     private String description;
     private double amount;
     private String category;
     private String date; // Add date field
 
-    public Transaction(String description, double amount, String category, String transactionID, String date) {
+    public Transaction(String description, double amount, String category, String transactionID, String date, String type, String accountUsed) {
         this.transactionID = transactionID;
         this.description = description;
         this.amount = amount;
         this.category = category;
-        this.date = date; // Initialize date field
+        this.date = date;
+        this.type = type;
+        this.accountUsed = accountUsed;
+
     }
 
     public String getTransactionID() {
@@ -22,6 +27,21 @@ public class Transaction {
 
     public void setTransactionID(String transactionID) {
         this.transactionID = transactionID;
+    }
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getAccountUsed() {
+        return accountUsed;
+    }
+
+    public void setAccountUsed(String accountUsed) {
+        this.accountUsed = accountUsed;
     }
 
     public String getDescription() {
