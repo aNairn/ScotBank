@@ -79,7 +79,7 @@ public class AccountController {
         String accountNumber = "12345678";
 
         // Render the homepage template with the username and account details
-        Template template = handlebars.compile("view/templates/homepage");
+        Template template = handlebars.compile("views/templates/homepage");
 
         // Create a model object with the username and account details
         Map<String, Object> model = new HashMap<>();
@@ -112,7 +112,7 @@ public class AccountController {
     public String getLogin(Context ctx) throws IOException {
         String fromPost = ctx.form("username").value();
         System.out.println(fromPost);
-        Template template = handlebars.compile("view/templates/homepage");
+        Template template = handlebars.compile("views/templates/homepage");
 
 
         String html = template.apply(fromPost);
@@ -143,7 +143,7 @@ public class AccountController {
     @GET("/transactions")
     public String getTransactionsPage(Context ctx) throws IOException {
         // Render the transactions page template with the transactions data
-        Template template = handlebars.compile("view/templates/transactions");
+        Template template = handlebars.compile("views/templates/transactions");
 
         // Create a model object with the transactions data
         Map<String, Object> model = new HashMap<>();
@@ -163,7 +163,7 @@ public class AccountController {
         Map<String, Double> spendingSummary = calculateSpendingSummary();
 
         // Render the spending page template with the spending summary and username
-        Template template = handlebars.compile("view/templates/spending");
+        Template template = handlebars.compile("views/templates/spending");
 
         // Create a model object with the spending summary and username
         Map<String, Object> model = new HashMap<>();
@@ -195,7 +195,7 @@ public class AccountController {
     public String getTransactionDetailsPage(Context ctx) throws IOException {
         String transactionId = ctx.query("transactionId").value();
         Transaction transaction = findTransactionById(transactionId);
-        Template template = handlebars.compile("view/templates/transactionDetails");
+        Template template = handlebars.compile("views/templates/transactionDetails");
         Map<String, Object> model = new HashMap<>();
         model.put("transaction", transaction);
         String html = template.apply(model);
