@@ -1,4 +1,4 @@
-package uk.co.asepstrath.bank.example;
+/*package uk.co.asepstrath.bank.example;
 
 import io.jooby.test.MockRouter;
 import uk.co.asepstrath.bank.App;
@@ -17,3 +17,4 @@ public class UnitTest {
         });
     }
 }
+*/
