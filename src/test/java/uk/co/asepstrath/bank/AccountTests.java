@@ -91,5 +91,4 @@ public class AccountTests {
         app.importAccDataFromAPI(apiUrl);
         assertFalse(app.getAccounts().isEmpty());
     }
-
 }

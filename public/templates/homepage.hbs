@@ -14,9 +14,6 @@
   display: flex;
   justify-content: center;
 }
-ul{
-list-style-type: none;
-}
 
 /* Navigation links */
 .navbar a {
@@ -56,15 +53,6 @@ list-style-type: none;
 
         .content {
             padding: 20px; /* Add padding to content area */
-            border: 1px solid #ccc;
-            border-radius: 5px;
-
-            margin-left: 2%;
-            margin-right: 5%;
-            margin-top: 3%;
-        }
-        #welcome-title{
-        margin-left: 2%;
         }
     </style>
 </head>
@@ -76,14 +64,9 @@ list-style-type: none;
     <a href="/spending">Spending</a>
 </div>
 
-<h1 id="welcome-title">Welcome back {{fromPost}}</h1>
 <div class="content">
-    <p>Account Details:</p>
-    <ul>
-        <li>Amount: £{{amount}}</li>
-        <li>Sort-Code: {{sortCode}}</li>
-        <li>Account-Number: {{accountNumber}}</li>
-    </ul>
+    <h1>Welcome back {{fromPost}}</h1>
+    <p>This is a simple webpage with a full-width navigation bar.</p>
 </div>
 
 </body>
