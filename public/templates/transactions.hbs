@@ -91,7 +91,7 @@
     <h1>Transactions</h1>
     <ul>
         {{#each transactions}}
-            <li><button onclick="showTransactionDetails('{{this.transactionID}}')">{{this.description}} - ${{this.amount}}</button></li>
+            <li><button onclick="showTransactionDetails('{{this.transactionID}}')">{{this.description}} - £{{this.amount}}</button></li>
         {{/each}}
     </ul>
 </div>
@@ -102,6 +102,7 @@
         window.location.href = "/transactionsDetails?transactionId=" + transactionId;
     }
 </script>
+
 
 </body>
 </html>
