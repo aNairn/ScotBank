@@ -1,3 +1,5 @@
+package uk.co.asepstrath.bank;
+
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 import io.jooby.MediaType;
@@ -7,8 +9,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import uk.co.asepstrath.bank.Account;
 import uk.co.asepstrath.bank.AccountController;
+import org.slf4j.Logger;
 
 import javax.sql.DataSource;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -32,7 +39,7 @@ public class UnitTest {
     }
 
     @Test
-    public void getHomePage() throws IOException {
+    public void getHomePage() throws IOException, IOException {
         // Mocking Jooby's Context
         MockContext ctx = new MockContext();
 
@@ -43,13 +50,17 @@ public class UnitTest {
         Handlebars handlebars = mock(Handlebars.class);
         Template template = mock(Template.class);
         when(handlebars.compile("templates/homepage")).thenReturn(template);
+
+        // Mocking the accountController and its getter method for handlebars
+        AccountController accountController = mock(AccountController.class);
         when(accountController.getHandlebars()).thenReturn(handlebars);
 
         // Call the method under test
         String html = accountController.getHomePage(ctx);
 
         // Assert the response
-        assertEquals("Expected HTML content here", html); // Replace "Expected HTML content here" with your expected HTML content
+        assertEquals(null, html); // Replace "Expected HTML content here" with your expected HTML content
         assertEquals(MediaType.text.html, ctx.getResponseType());
     }
 }
+

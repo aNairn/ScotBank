@@ -61,12 +61,12 @@
 </div>
 
 <div class="content">
-    <h1>Welcome back {{fromPost}}</h1>
+    <h1>{{fromPost}}, this is your Spending Summary: </h1>
     <h2>Spending Summary</h2>
     <p>Here is an overview of your spending categorized by business category:</p>
     <ul>
         {{#each spendingSummary}}
-            <li>{{@key}}: ${{this}}</li>
+            <li>{{@key}}: £{{this}}</li>
         {{/each}}
     </ul>
 </div>
