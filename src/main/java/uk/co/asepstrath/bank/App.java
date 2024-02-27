@@ -56,7 +56,7 @@ public class App extends Jooby {
             try {
                 //Create HttpClient
                 HttpClient client = HttpClient.newHttpClient();
-                //Creare GET request
+                //Create GET request
                 HttpRequest request = HttpRequest.newBuilder().uri(URI.create(apiUrl)).header("Accept", "application/json").build();
                 //Send/Receive
                 HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -80,6 +80,8 @@ public class App extends Jooby {
                         accounts.add(account);
                         System.out.println("Adding account: " + accounts.get(i));
                     }
+
+                    System.out.println("The Selected Account: " + accounts.get(2));
 
 
                 } else {

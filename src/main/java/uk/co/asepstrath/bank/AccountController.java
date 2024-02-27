@@ -40,14 +40,12 @@ public class AccountController {
         this.accounts = accounts;
         this.transactions = new ArrayList<>();
         // Fill the transactions list with sample transactions
-        transactions.add(new Transaction("Tesco", 100.00, "Supermarket", "ABCD123", "19/02/24","Payment","12345678"));
-        transactions.add(new Transaction("Asda", 200.00, "Supermarket", "DCE345","22/12/23","Payment","12345678"));
-        transactions.add(new Transaction("Sainsburys", 300.00, "Supermarket", "AED321","22/10/23","Payment","12345678"));
-        transactions.add(new Transaction("Costco", 10000.00, "Wholesaler", "DEC367","22/09/23","Payment","12345678"));
-        transactions.add(new Transaction("EE", 30.00, "Technology", "OUI455","22/10/22","Payment","12345678"));
-        transactions.add(new Transaction("O2", 45.00, "Technology", "CDF900","22/01/22","Payment","12345678"));
-        transactions.add(new Transaction("Michelle", 4.00, "Bank Transfer", "VDT087","22/01/22","Transfer","12345678"));
-        transactions.add(new Transaction("ATM", 100.00, "Cash Withdrawl", "VDT027","22/01/22","Withdrawl","12345678"));
+        transactions.add(new Transaction("Tesco", 100.00, "Supermarket", "ABCD123", "19/02/24"));
+        transactions.add(new Transaction("Asda", 200.00, "Supermarket", "DCE345","22/12/23"));
+        transactions.add(new Transaction("Sainsburys", 300.00, "Supermarket", "AED321","22/10/23"));
+        transactions.add(new Transaction("Costco", 10000.00, "Wholesaler", "DEC367","22/09/23"));
+        transactions.add(new Transaction("EE", 30.00, "Technology", "OUI455","22/10/22"));
+        transactions.add(new Transaction("O2", 45.00, "Technology", "CDF900","22/01/22"));
 
 
 
@@ -62,7 +60,7 @@ public class AccountController {
     @GET("/")
     public String getLoginPage(Context ctx) throws IOException {
 
-        Template template = handlebars.compile("templates/login");
+        Template template = handlebars.compile("/login");
 
 
         String html = template.apply(accounts);
