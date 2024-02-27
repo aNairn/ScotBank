@@ -100,10 +100,24 @@ public class App extends Jooby {
     public static void main(final String[] args) {
         App app = new App();
         app.importAccDataFromAPI("https://api.asep-strath.co.uk/api/accounts");
+
+        // Get the accounts after importing from the API
+        List<Account> accounts = app.getAccounts();
+        System.out.println("Accounts after importing from API:");
+        for (Account account : accounts) {
+            System.out.println(account);
+        }
+
         runApp(args, App::new);
     }
 
     public void onStart() {
+        System.out.println("Accounts michael importing from API:");
+
+        for (Account account : accounts) {
+            System.out.println(account);
+        }
+
         Logger log = this.getLog();
         log.info("Starting Up...");
 
@@ -113,10 +127,6 @@ public class App extends Jooby {
 
         //Results.html("accountTemplate").put("accounts",accounts);
         // Print the accounts list
-        System.out.println("Accounts after importing from API:");
-        for (Account account : accounts) {
-            System.out.println(account);
-        }
 
         DataSource ds = (DataSource)this.require(DataSource.class);
 
@@ -127,6 +137,34 @@ public class App extends Jooby {
                 Statement stmt = connection.createStatement();
                 stmt.executeUpdate("CREATE TABLE `Example` (`Key` varchar(255),`Value` varchar(255))");
                 stmt.executeUpdate("INSERT INTO Example VALUES ('WelcomeMessage', 'Welcome to A Bank')");
+                stmt.executeUpdate("CREATE TABLE Transactions (" +
+                        "id INT AUTO_INCREMENT PRIMARY KEY," + // Assuming each transaction has a unique identifier
+                        "merchant VARCHAR(255)," +             // Name of the merchant
+                        "amount DECIMAL(10, 2)," +             // Transaction amount (assuming 2 decimal places)
+                        "category VARCHAR(255)," +             // Transaction category
+                        "transactionId VARCHAR(255)," +        // Transaction ID
+                        "date VARCHAR(10)," +                  // Transaction date (assuming format DD/MM/YY)
+                        "type VARCHAR(255)," +                 // Transaction type (e.g., Payment)
+                        "accountId VARCHAR(255))");            // Account ID associated with the transaction
+
+                stmt.executeUpdate("CREATE TABLE Accounts (" +
+                        "id VARCHAR(36) PRIMARY KEY," +     // Account ID
+                        "name VARCHAR(255)," +              // Account holder's name
+                        "startingBalance DECIMAL(10, 2)," + // Starting balance (assuming 2 decimal places)
+                        "roundUpEnabled BOOLEAN)");         // Round-up enabled (true or false)
+
+                stmt.executeUpdate("INSERT INTO Accounts (id, name, startingBalance, roundUpEnabled) " +
+                        "VALUES ('8450019c-c8e5-4d59-a098-0ad35b6a2f2b', 'Albertha Bergnaum', 133.5, false)");
+
+                stmt.executeUpdate("INSERT INTO Accounts (id, name, startingBalance, roundUpEnabled) " +
+                        "VALUES ('2b438503-8001-4e96-8033-e3dcedd86844', 'Bernard Mayer III', 719.65, false)");
+
+                stmt.executeUpdate("INSERT INTO Accounts (id, name, startingBalance, roundUpEnabled) " +
+                        "VALUES ('7776c5f4-eb83-4ff3-8a2b-b131b51263c5', 'Gilma Hackett Sr.', 53.28, false)");
+
+                stmt.executeUpdate("INSERT INTO Accounts (id, name, startingBalance, roundUpEnabled) " +
+                        "VALUES ('35cc93c4-3a4b-4b83-8cbf-6f50276d66f0', 'Ethel Labadie', 60.96, false)");
+
             } catch (Throwable var7) {
                 if (connection != null) {
                     try {
