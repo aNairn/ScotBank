@@ -108,6 +108,7 @@ public class App extends Jooby {
             System.out.println(account);
         }
 
+
         runApp(args, App::new);
     }
 
