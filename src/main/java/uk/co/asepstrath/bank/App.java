@@ -15,6 +15,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ import java.util.UUID;
 
 @Path({"/example"})
 public class App extends Jooby {
-    private final List<Account> accounts = Collections.synchronizedList(new ArrayList<>());
+    private static final List<Account> accounts = Collections.synchronizedList(new ArrayList<>());
     //double[] accountAmounts = new double[]{50.0, 100.0, 76.0, 23.9, 3.0, 54.32};
     //String[] accountNames = new String[]{"Rachel", "Monica", "Phoebe", "Joey", "Chandler", "Ross"};
 
@@ -50,7 +51,7 @@ public class App extends Jooby {
         });
     }
 
-    public void importAccDataFromAPI(String apiUrl){
+    public static void importAccDataFromAPI(String apiUrl){
 
 
             try {
@@ -74,7 +75,7 @@ public class App extends Jooby {
                         boolean roundUpEnabled = accountJson.getBoolean("roundUpEnabled");
                         // Create an Account object using the constructor for API data
                         Account account = new Account(UUID.fromString(id), name, startingBalance, roundUpEnabled);
-                        System.out.println("Parsed JSON Array:\n" + jsonArray.get(i));
+                        //System.out.println("Parsed JSON Array:\n" + jsonArray.get(i));
 
                         // Add the account to your accounts list
                         accounts.add(account);
@@ -93,20 +94,16 @@ public class App extends Jooby {
             }
         }
 
-    public List<Account> getAccounts() {
+    public static List<Account> getAccounts() {
         return Collections.unmodifiableList(accounts);
     }
 
     public static void main(final String[] args) {
         App app = new App();
-        app.importAccDataFromAPI("https://api.asep-strath.co.uk/api/accounts");
+        //importAccDataFromAPI("https://api.asep-strath.co.uk/api/accounts");
 
-        // Get the accounts after importing from the API
-        List<Account> accounts = app.getAccounts();
-        System.out.println("Accounts after importing from API:");
-        for (Account account : accounts) {
-            System.out.println(account);
-        }
+        //Get the accounts after importing from the API
+
 
 
         runApp(args, App::new);
@@ -115,6 +112,11 @@ public class App extends Jooby {
     public void onStart() {
         System.out.println("Accounts michael importing from API:");
 
+        importAccDataFromAPI("https://api.asep-strath.co.uk/api/accounts");
+
+        //Get the accounts after importing from the API
+        List<Account> accounts = getAccounts();
+        System.out.println("Accounts after importing from API:");
         for (Account account : accounts) {
             System.out.println(account);
         }
@@ -122,12 +124,7 @@ public class App extends Jooby {
         Logger log = this.getLog();
         log.info("Starting Up...");
 
-       // for(int i = 0; i < this.accountNames.length; i++) {
-         //   this.accounts.add(new Account(this.accountNames[i], this.accountAmounts[i]));
-        //}
-
-        //Results.html("accountTemplate").put("accounts",accounts);
-        // Print the accounts list
+        for (Account account : accounts) {
 
         DataSource ds = (DataSource)this.require(DataSource.class);
 
@@ -136,9 +133,7 @@ public class App extends Jooby {
 
             try {
                 Statement stmt = connection.createStatement();
-                stmt.executeUpdate("CREATE TABLE `Example` (`Key` varchar(255),`Value` varchar(255))");
-                stmt.executeUpdate("INSERT INTO Example VALUES ('WelcomeMessage', 'Welcome to A Bank')");
-                stmt.executeUpdate("CREATE TABLE Transactions (" +
+                 stmt.executeUpdate("CREATE TABLE IF NOT EXISTS Transactions (" +
                         "id INT AUTO_INCREMENT PRIMARY KEY," + // Assuming each transaction has a unique identifier
                         "merchant VARCHAR(255)," +             // Name of the merchant
                         "amount DECIMAL(10, 2)," +             // Transaction amount (assuming 2 decimal places)
@@ -148,12 +143,21 @@ public class App extends Jooby {
                         "type VARCHAR(255)," +                 // Transaction type (e.g., Payment)
                         "accountId VARCHAR(255))");            // Account ID associated with the transaction
 
-                stmt.executeUpdate("CREATE TABLE Accounts (" +
+                stmt.executeUpdate("CREATE TABLE IF NOT EXISTS Accounts (" +
                         "id VARCHAR(36) PRIMARY KEY," +     // Account ID
                         "name VARCHAR(255)," +              // Account holder's name
                         "startingBalance DECIMAL(10, 2)," + // Starting balance (assuming 2 decimal places)
                         "roundUpEnabled BOOLEAN)");         // Round-up enabled (true or false)
 
+                String insertAccountSQL = "INSERT INTO Accounts (id, name, startingBalance, roundUpEnabled) VALUES (?, ?, ?, ?)";
+                try (PreparedStatement pstmt = connection.prepareStatement(insertAccountSQL)) {
+                    pstmt.setString(1, account.getId().toString());
+                    pstmt.setString(2, account.getName());
+                    pstmt.setDouble(3, account.getBalance());
+                    pstmt.setBoolean(4, account.isRoundUpEnabled());
+                    pstmt.executeUpdate();
+                }
+/*
                 stmt.executeUpdate("INSERT INTO Accounts (id, name, startingBalance, roundUpEnabled) " +
                         "VALUES ('8450019c-c8e5-4d59-a098-0ad35b6a2f2b', 'Albertha Bergnaum', 133.5, false)");
 
@@ -165,7 +169,7 @@ public class App extends Jooby {
 
                 stmt.executeUpdate("INSERT INTO Accounts (id, name, startingBalance, roundUpEnabled) " +
                         "VALUES ('35cc93c4-3a4b-4b83-8cbf-6f50276d66f0', 'Ethel Labadie', 60.96, false)");
-
+*/
             } catch (Throwable var7) {
                 if (connection != null) {
                     try {
@@ -185,6 +189,7 @@ public class App extends Jooby {
             log.error("Database Creation Error", var8);
         }
 
+    }
     }
 
     public void onStop() {
