@@ -102,7 +102,7 @@ public class App extends Jooby {
         App app = new App();
         //importAccDataFromAPI("https://api.asep-strath.co.uk/api/accounts");
 
-        //Get the accounts after importing from the API
+
 
 
 
@@ -113,6 +113,8 @@ public class App extends Jooby {
         System.out.println("Accounts michael importing from API:");
 
         importAccDataFromAPI("https://api.asep-strath.co.uk/api/accounts");
+       // importTransactionDataFromAPI("https://api.asep-strath.co.uk/api/transactions"); //uses xml then need to parse it through
+       // importBuisnessDataFromAPI("https://api.asep-strath.co.uk/api/");
 
         //Get the accounts after importing from the API
         List<Account> accounts = getAccounts();
