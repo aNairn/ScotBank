@@ -7,8 +7,6 @@ import io.jooby.test.MockContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import uk.co.asepstrath.bank.Account;
-import uk.co.asepstrath.bank.AccountController;
 import org.slf4j.Logger;
 
 import javax.sql.DataSource;
@@ -59,7 +57,99 @@ public class UnitTest {
         String html = accountController.getHomePage(ctx);
 
         // Assert the response
-        assertEquals(null, html); // Replace "Expected HTML content here" with your expected HTML content
+
+        assertEquals("""
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Accounts</title>
+                    <style>
+                        /* Styles for the navigation bar */
+                        /* Style the navigation menu */
+                .navbar {
+                  width: 100%;
+                  background-color: #555;
+                  overflow: auto;
+                  display: flex;
+                  justify-content: center;
+                }
+                ul{
+                list-style-type: none;
+                }
+
+                /* Navigation links */
+                .navbar a {
+                  float: left;
+                  padding: 12px;
+                  color: white;
+                  text-decoration: none;
+                  font-size: 17px;
+                  width: 33.33%; /* Four equal-width links. If you have two links, use 50%, and 33.33% for three links, etc.. */
+                  text-align: center; /* If you want the text to be centered */
+                }
+
+                /* Add a background color on mouse-over */
+                .navbar a:hover {
+                  background-color: #000;
+                }
+
+                /* Style the current/active link */
+
+
+                /* Add responsiveness - on screens less than 500px, make the navigation links appear on top of each other, instead of next to each other */
+                @media screen and (max-width: 500px) {
+                  .navbar a {
+                    float: none;
+                    display:inline-block; ;
+                    width: 100%;
+
+                    text-align: center; /* If you want the text to be left-aligned on small screens */
+                  }
+                }
+                        /* Additional styles to make the page look better */
+                        body {
+                            font-family: Arial, sans-serif;
+                            margin: 0; /* Remove default margin */
+                            padding: 0; /* Remove default padding */
+                        }
+
+                        .content {
+                            padding: 20px; /* Add padding to content area */
+                            border: 1px solid #ccc;
+                            border-radius: 5px;
+
+                            margin-left: 2%;
+                            margin-right: 5%;
+                            margin-top: 3%;
+                        }
+                        #welcome-title{
+                        margin-left: 2%;
+                        }
+                    </style>
+                </head>
+                <body>
+
+                <div class="navbar">
+                    <a href="/homepage">Account</a>
+                    <a href="/transactions" >Transactions</a>
+                    <a href="/spending">Spending</a>
+                </div>
+
+                <h1 id="welcome-title">Welcome back {{fromPost}}</h1>
+                <div class="content">
+                    <p>Account Details:</p>
+                    <ul>
+                        <li>Amount: £{{amount}}</li>
+                        <li>Sort-Code: {{sortCode}}</li>
+                        <li>Account-Number: {{accountNumber}}</li>
+                    </ul>
+                </div>
+
+                </body>
+                </html>
+                """, html); // Replace "Expected HTML content here" with your expected HTML content
         assertEquals(MediaType.text.html, ctx.getResponseType());
     }
 
