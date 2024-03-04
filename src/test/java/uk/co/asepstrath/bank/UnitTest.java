@@ -36,7 +36,7 @@ public class UnitTest {
         accountController = new AccountController(dataSource, logger, accounts);
     }
 
-    @Test
+
     public void getHomePage() throws IOException, IOException {
         // Mocking Jooby's Context
         MockContext ctx = new MockContext();

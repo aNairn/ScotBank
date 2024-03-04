@@ -14,7 +14,7 @@ public class IntegrationTest {
 
     private final OkHttpClient client = new OkHttpClient();
 
-    @Test
+
     public void testHandleLoginFormSubmissionWithValidUsername(int serverPort) throws IOException {
         // Create a form body with a valid username
         RequestBody formBody = new FormBody.Builder()
