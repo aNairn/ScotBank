@@ -20,7 +20,7 @@ public class Business {
         this.beenSanctioned = beenSanctioned;
     }
 
-    String getbuisnessID(){
+    String getbusinessID(){
         return buisnessID;
     }
     String getBuisnessName(){
