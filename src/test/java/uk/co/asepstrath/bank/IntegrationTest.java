@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @JoobyTest(App.class)
 public class IntegrationTest {
@@ -53,7 +52,7 @@ public class IntegrationTest {
             assertEquals(StatusCode.BAD_REQUEST.value(), response.code());
 
             // Ensure the error message is correct
-            assertEquals("Error: Username cannot be empty", response.body().string().trim());
+            assertEquals("Error: Username cannot be empty and must be in database", response.body().string().trim());
         }
     }
 }

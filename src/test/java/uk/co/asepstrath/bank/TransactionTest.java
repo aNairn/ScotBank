@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class TransactionTest {
 
     @Test
-    void getDescription() {
+    public void getDescription() {
         // Arrange
         Transaction transaction = new Transaction("", 1000,"","","","","");
         String expectedDescription = "Test Description";
@@ -21,7 +21,7 @@ class TransactionTest {
     }
 
     @Test
-    void setDescription() {
+    public void setDescription() {
         // Arrange
         Transaction transaction = new Transaction("", 1000,"","","","","");
         String expectedDescription = "Test Description";
@@ -35,7 +35,7 @@ class TransactionTest {
     }
 
     @Test
-    void getAmount() {
+    public void getAmount() {
         // Arrange
         Transaction transaction = new Transaction("", 1000,"","","","","");
         double expectedAmount = 100.50;
@@ -49,7 +49,7 @@ class TransactionTest {
     }
 
     @Test
-    void setAmount() {
+    public void setAmount() {
         // Arrange
         Transaction transaction = new Transaction("", 1000,"","","","","");
         double expectedAmount = 100.50;
@@ -63,7 +63,7 @@ class TransactionTest {
     }
 
     @Test
-    void getCategory() {
+    public void getCategory() {
         // Arrange
         Transaction transaction = new Transaction("", 1000,"","","","","");
         String expectedCategory = "Test Category";
@@ -77,7 +77,7 @@ class TransactionTest {
     }
 
     @Test
-    void setCategory() {
+    public void setCategory() {
         // Arrange
         Transaction transaction = new Transaction("", 1000,"","","","","");
         String expectedCategory = "Test Category";
@@ -91,7 +91,7 @@ class TransactionTest {
     }
 
     @Test
-    void testTransactionID() {
+    public void testTransactionID() {
         // Arrange
         Transaction transaction = new Transaction("", 1000,"","","","","");
         String expectedTransactionID = "XYZ789";
@@ -105,7 +105,7 @@ class TransactionTest {
     }
 
     @Test
-    void testDate() {
+    public void testDate() {
         // Arrange
         Transaction transaction = new Transaction("", 1000,"","","","","");
         String expectedDate = "2022-02-22";
@@ -119,7 +119,7 @@ class TransactionTest {
     }
 
     @Test
-    void testType() {
+    public void testType() {
         // Arrange
         Transaction transaction = new Transaction("", 1000,"","","","","");
         String expectedType = "Payment";
@@ -133,7 +133,7 @@ class TransactionTest {
     }
 
     @Test
-    void testAccountUsed() {
+    public void testAccountUsed() {
         // Arrange
         Transaction transaction = new Transaction("", 1000,"","","","","");
         String expectedAccountUsed = "12345678";
@@ -147,7 +147,7 @@ class TransactionTest {
     }
 
     @Test
-    void testParameterizedConstructor() {
+    public void testParameterizedConstructor() {
         // Arrange
         String description = "Test Description";
         double amount = 100.50;
@@ -169,7 +169,7 @@ class TransactionTest {
     }
 
     @Test
-    void testToString() {
+    public void testToString() {
         // Arrange
         Transaction transaction = new Transaction("", 1000,"","","","","");
         transaction.setDescription("Test Description");

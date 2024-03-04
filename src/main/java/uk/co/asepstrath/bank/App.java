@@ -40,15 +40,11 @@ public class App extends Jooby {
         this.install(new HikariModule("mem"));
         this.assets("/assets/*", "/assets");
         this.assets("/service_worker.js", "/service_worker.js");
-        DataSource ds = (DataSource)this.require(DataSource.class);
+        DataSource ds = this.require(DataSource.class);
         Logger log = this.getLog();
-        this.mvc(new AccountController(ds, log, this.accounts));
-        this.onStarted(() -> {
-            this.onStart();
-        });
-        this.onStop(() -> {
-            this.onStop();
-        });
+        this.mvc(new AccountController(ds, log, accounts));
+        this.onStarted(this::onStart);
+        this.onStop(this::onStop);
     }
 
     public static void importAccDataFromAPI(String apiUrl){
@@ -128,7 +124,7 @@ public class App extends Jooby {
 
         for (Account account : accounts) {
 
-        DataSource ds = (DataSource)this.require(DataSource.class);
+        DataSource ds = this.require(DataSource.class);
 
         try {
             Connection connection = ds.getConnection();

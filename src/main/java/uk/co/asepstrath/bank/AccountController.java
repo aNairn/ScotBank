@@ -28,7 +28,7 @@ public class AccountController {
     private final List<Account> accounts;
 
 
-    private Handlebars handlebars;
+    private final Handlebars handlebars;
 
 
 
@@ -68,7 +68,7 @@ public class AccountController {
         String html = template.apply(accounts);
 
         // Set response type and return HTML
-        ctx.setResponseType(MediaType.text.html);
+        ctx.setResponseType(MediaType.html);
         return html;
     }
 
@@ -103,7 +103,7 @@ public class AccountController {
         String html = template.apply(model);
 
         // Set response type and return HTML
-        ctx.setResponseType(MediaType.text.html);
+        ctx.setResponseType(MediaType.html);
         return html;
     }
 
@@ -164,7 +164,7 @@ public class AccountController {
         String html = template.apply(model);
 
         // Set response type and return HTML
-        ctx.setResponseType(MediaType.text.html);
+        ctx.setResponseType(MediaType.html);
         return html;
     }
 
@@ -238,7 +238,7 @@ public class AccountController {
         String html = template.apply(model);
 
         // Set response type and return HTML
-        ctx.setResponseType(MediaType.text.html);
+        ctx.setResponseType(MediaType.html);
         return html;
 
     }
@@ -322,7 +322,7 @@ public class AccountController {
         String html = template.apply(model);
 
         // Set response type and return HTML
-        ctx.setResponseType(MediaType.text.html);
+        ctx.setResponseType(MediaType.html);
         return html;
     }
     @GET("/spending")
@@ -343,7 +343,7 @@ public class AccountController {
         String html = template.apply(model);
 
         // Set response type and return HTML
-        ctx.setResponseType(MediaType.text.html);
+        ctx.setResponseType(MediaType.html);
         return html;
     }
 
@@ -369,7 +369,7 @@ public class AccountController {
         Map<String, Object> model = new HashMap<>();
         model.put("transaction", transaction);
         String html = template.apply(model);
-        ctx.setResponseType(MediaType.text.html);
+        ctx.setResponseType(MediaType.html);
         return html;
     }
 
