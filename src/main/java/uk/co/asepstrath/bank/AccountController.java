@@ -21,8 +21,8 @@ import org.slf4j.Logger;
 
 @Path({"/"})
 public class AccountController {
-    private final List<Transaction> transactions;
-
+    private final List<Transactions> transactions;
+private final List<Business> businesses;
     private final DataSource dataSource;
     private final Logger logger;
     private final List<Account> accounts;
@@ -32,20 +32,14 @@ public class AccountController {
 
 
 
-    public AccountController(DataSource ds, Logger log, List<Account> accounts) {
+    public AccountController(DataSource ds, Logger log, List<Account> accounts, List<Transactions> transactions, List<Business> businesses) {
         this.dataSource = ds;
         this.logger = log;
         this.accounts = accounts;
-        this.transactions = new ArrayList<>();
+        this.transactions = transactions;
+        this.businesses = businesses;
+
         // Fill the transactions list with sample transactions
-        transactions.add(new Transaction("Tesco", 100.00, "Supermarket", "ABCD123", "19/02/24","Payment","12345678"));
-        transactions.add(new Transaction("Asda", 200.00, "Supermarket", "DCE345","22/12/23","Payment","12345678"));
-        transactions.add(new Transaction("Sainsburys", 300.00, "Supermarket", "AED321","22/10/23","Payment","12345678"));
-        transactions.add(new Transaction("Costco", 10000.00, "Wholesaler", "DEC367","22/09/23","Payment","12345678"));
-        transactions.add(new Transaction("EE", 30.00, "Technology", "OUI455","22/10/22","Payment","12345678"));
-        transactions.add(new Transaction("O2", 45.00, "Technology", "CDF900","22/01/22","Payment","12345678"));
-        transactions.add(new Transaction("Michelle", 4.00, "Bank Transfer", "VDT087","22/01/22","Transfer","12345678"));
-        transactions.add(new Transaction("ATM", 100.00, "Cash Withdrawl", "VDT027","22/01/22","Withdrawl","12345678"));
 
 
 
@@ -312,12 +306,15 @@ public class AccountController {
     }
     @GET("/transactions")
     public String getTransactionsPage(Context ctx) throws IOException {
-        // Render the transactions page template with the transactions data
-        Template template = handlebars.compile("views/templates/transactions");
+        String fromPost = ctx.session().get("fromPost").value();
 
-        // Create a model object with the transactions data
+        // Filter transactions based on the 'from' field
+        List<Transactions> filteredTransactions = filterTransactionsByFrom(fromPost);
+
+        // Render the transactions page template with the filtered transactions data
+        Template template = handlebars.compile("views/templates/transactions");
         Map<String, Object> model = new HashMap<>();
-        model.put("transactions", transactions);
+        model.put("transactions", filteredTransactions);
 
         String html = template.apply(model);
 
@@ -325,7 +322,18 @@ public class AccountController {
         ctx.setResponseType(MediaType.html);
         return html;
     }
-    @GET("/spending")
+
+    private List<Transactions> filterTransactionsByFrom(String fromPost) {
+        List<Transactions> filteredTransactions = new ArrayList<>();
+        for (Transactions transaction : transactions) {
+            if (transaction.getFrom().equals(fromPost)) {
+                filteredTransactions.add(transaction);
+            }
+        }
+        return filteredTransactions;
+    }
+
+  /*  @GET("/spending")
     public String getSpendingPage(Context ctx) throws IOException {
         String username = ctx.session().get("fromPost").value();
 
@@ -345,8 +353,8 @@ public class AccountController {
         // Set response type and return HTML
         ctx.setResponseType(MediaType.html);
         return html;
-    }
-
+    }*/
+/*
     private Map<String, Double> calculateSpendingSummary() {
         Map<String, Double> spendingSummary = new HashMap<>();
 
@@ -361,25 +369,44 @@ public class AccountController {
 
         return spendingSummary;
     }
-    @GET("/transactionsDetails")
-    public String getTransactionDetailsPage(Context ctx) throws IOException {
-        String transactionId = ctx.query("transactionId").value();
-        Transaction transaction = findTransactionById(transactionId);
-        Template template = handlebars.compile("views/templates/transactionDetails");
-        Map<String, Object> model = new HashMap<>();
-        model.put("transaction", transaction);
-        String html = template.apply(model);
-        ctx.setResponseType(MediaType.html);
-        return html;
-    }
+    */
+  @GET("/transactionsDetails")
+  public String getTransactionDetailsPage(Context ctx) throws IOException {
+      String transactionId = ctx.query("transactionId").value();
+      Transactions transaction = findTransactionById(transactionId);
 
-    private Transaction findTransactionById(String transactionId) {
-        for (Transaction transaction : transactions) {
-            if (transaction.getTransactionID().equals(transactionId)) {
+      String businessName = getBusinessNameById(transaction.getTo());
+
+      // Render the transactionDetails page template with the transaction data
+      Template template = handlebars.compile("views/templates/transactionDetails");
+      Map<String, Object> model = new HashMap<>();
+      model.put("transaction", transaction);
+      model.put("business", businessName);
+
+
+      String html = template.apply(model);
+
+      // Set response type and return HTML
+      ctx.setResponseType(MediaType.html);
+      return html;
+  }
+
+    private Transactions findTransactionById(String transactionId) {
+        for (Transactions transaction : transactions) {
+            if (transaction.getId().equals(transactionId)) {
                 return transaction;
             }
         }
         return null;
+    }
+
+    private String getBusinessNameById(String businessId) {
+        for (Business business : businesses) {
+            if (business.getbusinessID().equals(businessId)) {
+                return business.getBuisnessName();
+            }
+        }
+        return null; // Return null if business not found
     }
 
 }

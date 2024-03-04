@@ -91,7 +91,7 @@
     <h1>Transactions</h1>
     <ul>
         {{#each transactions}}
-            <li><button onclick="showTransactionDetails('{{this.transactionID}}')">{{this.description}} - £{{this.amount}}0</button></li>
+            <li><button onclick="showTransactionDetails('{{this.id}}')">{{this.to}} - £{{this.amount}}0</button></li>
         {{/each}}
     </ul>
 </div>

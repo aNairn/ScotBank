@@ -28,12 +28,15 @@ public class UnitTest {
         DataSource dataSource = Mockito.mock(DataSource.class);
         Logger logger = Mockito.mock(Logger.class);
         List<Account> accounts = new ArrayList<>();
+        List<Transactions> transactions = new ArrayList<>();
+        List<Business> businesses = new ArrayList<>();
+
         // Adding some dummy accounts for testing
         accounts.add(new Account("John", 100.00));
         accounts.add(new Account("Alice", 200.00));
         accounts.add(new Account("Bob", 300.00));
 
-        accountController = new AccountController(dataSource, logger, accounts);
+        accountController = new AccountController(dataSource, logger, accounts,transactions,businesses);
     }
 
 

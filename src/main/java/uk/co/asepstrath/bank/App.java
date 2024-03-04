@@ -357,8 +357,9 @@ import java.util.UUID;
 @Path({"/example"})
 public class App extends Jooby {
     private static final List<Account> accounts = Collections.synchronizedList(new ArrayList<>());
-    private static final List<Transactions> transactionslist = Collections.synchronizedList(new ArrayList<>());
+   // private static  List<Transactions> transactionslist = Collections.synchronizedList(new ArrayList<>());
     private static final List<Business> businessList = Collections.synchronizedList(new ArrayList<>());
+    private static final List<Transactions> transactionsList = Collections.synchronizedList(new ArrayList<>());;
 
     //double[] accountAmounts = new double[]{50.0, 100.0, 76.0, 23.9, 3.0, 54.32};
     //String[] accountNames = new String[]{"Rachel", "Monica", "Phoebe", "Joey", "Chandler", "Ross"};
@@ -371,7 +372,7 @@ public class App extends Jooby {
         this.assets("/service_worker.js", "/service_worker.js");
         DataSource ds = (DataSource)this.require(DataSource.class);
         Logger log = this.getLog();
-        this.mvc(new AccountController(ds, log, this.accounts));
+        this.mvc(new AccountController(ds, log, this.accounts,this.transactionsList,this.businessList));
         this.onStarted(() -> {
             this.onStart();
         });
@@ -455,8 +456,8 @@ public class App extends Jooby {
                         // Example:
                         Transactions transaction = new Transactions(timestamp, amount, from, id, to, type);
 
-                        transactionslist.add(transaction);
-                        System.out.println("Adding transaction: " + transactionslist.get(i));
+                        transactionsList.add(transaction);
+                        System.out.println("Adding transaction: " + transactionsList.get(i));
 
                         // Add the transaction to your list or process it as required
                         System.out.println("Processed transaction: " + transaction);
@@ -543,7 +544,7 @@ public class App extends Jooby {
 
 
         System.out.println("transactions after importing from API:");
-        for(Transactions transactions : transactionslist){
+        for(Transactions transactions : transactionsList){
         System.out.println(transactions);
     }
         System.out.println("businesses after importing from API:");
@@ -598,7 +599,7 @@ public class App extends Jooby {
                     String insertTransactionsSQL = "INSERT INTO transactions2 (timestamp, amount, sender, receiver, transaction_id, type) " +
                             "VALUES (?, ?, ?, ?, ?, ?)";
                    try (PreparedStatement pstmt = connection.prepareStatement(insertTransactionsSQL)) {
-                        for (Transactions transaction : transactionslist) {
+                        for (Transactions transaction : transactionsList) {
                             pstmt.setString(1, transaction.getTimestamp());
                             pstmt.setDouble(2, transaction.getAmount());
                             pstmt.setString(3, transaction.getFrom());
