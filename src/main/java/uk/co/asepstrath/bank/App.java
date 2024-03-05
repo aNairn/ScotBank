@@ -417,7 +417,8 @@ public class App extends Jooby {
                 throw new Error("Failed to fetch data from the API. HTTP status code: " + response.statusCode());
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            System.out.println("Failed to fetch data from the API.");
         }
     }
 
@@ -466,7 +467,8 @@ public class App extends Jooby {
                 throw new Error("Failed to fetch data from the API. HTTP status code: " + response.statusCode());
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            System.out.println("Could not fetch data from API");
         }
     }
     public static void importAccDataFromAPI(String apiUrl){
@@ -508,7 +510,8 @@ public class App extends Jooby {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            System.out.println("Unable to fetch data from the API.");
         }
     }
 
