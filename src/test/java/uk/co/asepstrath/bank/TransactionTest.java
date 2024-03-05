@@ -169,6 +169,20 @@ class TransactionTest {
     }
 
     @Test
+    void testGetType() {
+        // Create an instance of the Transaction class
+        Transaction transaction = new Transaction("", 1000,"","","","","");
+
+        // Set up test data
+        String expectedType = "Payment";
+        transaction.setType(expectedType);
+
+        // Call the getType method and verify the result
+        String actualType = transaction.getType();
+        assertEquals(expectedType, actualType);
+    }
+
+    @Test
     public void testToString() {
         // Arrange
         Transaction transaction = new Transaction("", 1000,"","","","","");
@@ -184,5 +198,61 @@ class TransactionTest {
         assertTrue(toStringResult.contains("Test Description"));
         assertEquals(100.50, 100.50);
         assertTrue(toStringResult.contains("Test Category"));
+    }
+
+    @Test
+    void testSetAmount() {
+        Transactions transactions = new Transactions("", 1000,"","","","");
+
+        // Set up test data
+        double testAmount = 50.0;
+
+        // Call the setter method
+        transactions.setAmount(testAmount);
+
+        // Verify that the property has been set correctly
+        assertEquals(testAmount, transactions.getAmount());
+    }
+
+    @Test
+    void testSetId() {
+        Transactions transactions = new Transactions("", 1000,"","","","");
+
+        // Set up test data
+        String testId = "123456";
+
+        // Call the setter method
+        transactions.setId(testId);
+
+        // Verify that the property has been set correctly
+        assertEquals(testId, transactions.getId());
+    }
+
+    @Test
+    void testSetTo() {
+        Transactions transactions = new Transactions("", 1000,"","","","");
+
+        // Set up test data
+        String testTo = "Receiver";
+
+        // Call the setter method
+        transactions.setTo(testTo);
+
+        // Verify that the property has been set correctly
+        assertEquals(testTo, transactions.getTo());
+    }
+
+    @Test
+    void testSetType() {
+        Transactions transactions = new Transactions("", 1000,"","","","");
+
+        // Set up test data
+        String testType = "Payment";
+
+        // Call the setter method
+        transactions.setType(testType);
+
+        // Verify that the property has been set correctly
+        assertEquals(testType, transactions.getType());
     }
 }

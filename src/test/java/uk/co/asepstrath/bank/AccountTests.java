@@ -88,7 +88,15 @@ public class AccountTests {
     public void importAccounts(){
         App app = new App();
         String apiUrl = "https://api.asep-strath.co.uk/api/accounts";
-       // app.importAccDataFromAPI(apiUrl);
+        try {
+            String accessToken = app.fetchOAuth2Token();
+            app.importAccDataFromAPI(apiUrl, accessToken);
+        } catch (Exception e) {
+            fail("Exception while fetching access token or importing data from API: " + e.getMessage());
+        }
         assertFalse(app.getAccounts().isEmpty());
     }
+
+    //Business Tests
+
 }

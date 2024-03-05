@@ -56,7 +56,7 @@ public class App extends Jooby {
         });
     }
 
-    private String fetchOAuth2Token() throws Exception {
+    String fetchOAuth2Token() throws Exception {
         String authHeaderValue = "Basic " + Base64.getEncoder().encodeToString("scotbank:this1password2is3not4secure".getBytes(StandardCharsets.UTF_8));
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("https://api.asep-strath.co.uk/oauth2/token"))
@@ -326,8 +326,8 @@ public class App extends Jooby {
                     String insertBusinessesSQL = "INSERT INTO businesses (id, name, category, sanctioned) VALUES (?, ?, ?, ?)";
                     try (PreparedStatement pstmt = connection.prepareStatement(insertBusinessesSQL)) {
                         for (Business business : businessList) {
-                            pstmt.setString(1, business.getbusinessID());
-                            pstmt.setString(2, business.getBuisnessName());
+                            pstmt.setString(1, business.getBusinessID());
+                            pstmt.setString(2, business.getBusinessName());
                             pstmt.setString(3, business.getCategory());
                             pstmt.setBoolean(4, business.getBeenSanctioned());
                             pstmt.executeUpdate();

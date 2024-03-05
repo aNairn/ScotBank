@@ -36,13 +36,9 @@ public class Transaction {
         this.type = type;
     }
 
-    public String getAccountUsed() {
-        return accountUsed;
-    }
+    //public String getAccountUsed() {return accountUsed;}
 
-    public void setAccountUsed(String accountUsed) {
-        this.accountUsed = accountUsed;
-    }
+    //public void setAccountUsed(String accountUsed) {this.accountUsed = accountUsed;}
 
     public String getDescription() {
         return description;

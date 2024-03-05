@@ -21,9 +21,7 @@ public class Transactions {
         return timestamp;
     }
 
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
-    }
+    //public void setTimestamp(String timestamp) { this.timestamp = timestamp;}
 
     public double getAmount() {
         return amount;
@@ -37,9 +35,7 @@ public class Transactions {
         return from;
     }
 
-    public void setFrom(String from) {
-        this.from = from;
-    }
+    //public void setFrom(String from) { this.from = from;}
 
     public String getId() {
         return id;

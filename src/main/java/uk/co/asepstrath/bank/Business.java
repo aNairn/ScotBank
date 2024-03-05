@@ -1,30 +1,29 @@
 package uk.co.asepstrath.bank;
-import java.util.UUID;
 
 public class Business {
 
-    String buisnessID;
+    String businessID;
 
-    String buisnessName;
+    String businessName;
 
     String category;
 
     Boolean beenSanctioned;
 
 
-    public Business(String buisnessID, String buisnessName, String category, boolean beenSanctioned){
+    public Business(String businessID, String businessName, String category, boolean beenSanctioned){
 
-        this.buisnessID = buisnessID;
-        this.buisnessName = buisnessName;
+        this.businessID = businessID;
+        this.businessName = businessName;
         this.category = category;
         this.beenSanctioned = beenSanctioned;
     }
 
-    String getbusinessID(){
-        return buisnessID;
+    String getBusinessID(){
+        return businessID;
     }
-    String getBuisnessName(){
-        return buisnessName;
+    String getBusinessName(){
+        return businessName;
     }
 
     String getCategory(){
@@ -35,25 +34,17 @@ public class Business {
         return beenSanctioned;
     }
 
-    void setBuisnessID(String buisnessID){
-        this.buisnessID = buisnessID;
-    }
-    void setCategory(String category){
-        this.category = category;
-    }
-    void setBuisnessName(String buisnessName){
-        this.buisnessName = buisnessName;
-    }
-    void setBeenSanctioned(boolean beenSanctioned){
-        this.beenSanctioned = beenSanctioned;
-    }
+    //void setBusinessID(String businessID){ this.businessID = businessID;}
+    //void setCategory(String category){ this.category = category;}
+    //void setBusinessName(String businessName){ this.businessName = businessName;}
+    //void setBeenSanctioned(boolean beenSanctioned){ this.beenSanctioned = beenSanctioned;}
 
     @Override
     public String toString() {
-        return "Buisness: " +
-                "ID: " + buisnessID + ' ' +
+        return "Business: " +
+                "ID: " + businessID + ' ' +
                 "Category: " + category + ' ' +
-                "Business: " + buisnessName + ' ' +
+                "Business: " + businessName + ' ' +
                 "Sanctioned?: " + beenSanctioned;
     }
 }

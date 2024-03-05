@@ -7,6 +7,7 @@ package uk.co.asepstrath.bank;
 import io.jooby.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
+import io.jooby.Jooby;
 import io.jooby.MediaType;
 import io.jooby.StatusCode;
 import io.jooby.annotation.*;
@@ -21,7 +22,7 @@ import java.text.DecimalFormat;
 
 
 @Path({"/"})
-public class AccountController {
+public class AccountController extends Jooby {
     private final List<Transactions> transactions;
 private final List<Business> businesses;
     private final DataSource dataSource;
@@ -103,7 +104,7 @@ private final List<Business> businesses;
     }
 
 
-    private List<Account> getAccountsFromDatabase() {
+    List<Account> getAccountsFromDatabase() {
         List<Account> accounts = new ArrayList<>();
 
         try (Connection connection = dataSource.getConnection()) {
@@ -168,7 +169,7 @@ private final List<Business> businesses;
         return html;
     }
 
-    private double calculateCurrentAmountFromTransactions(String username) {
+    double calculateCurrentAmountFromTransactions(String username) {
         // Logic to calculate current amount based on transactions
         double startingAmount = getStartingAmountFromUUID(username);
         List<Transactions> userTransactions = filterTransactionsByFrom(username);
@@ -289,7 +290,7 @@ private final List<Business> businesses;
 
     }
 
-    private String getUserNameFromUUID(String uuid) {
+    String getUserNameFromUUID(String uuid) {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT name FROM Accounts WHERE id = ?");
             preparedStatement.setString(1, uuid);
@@ -559,7 +560,7 @@ private final List<Business> businesses;
       return html;
   }
 
-    private Transactions findTransactionById(String transactionId) {
+    Transactions findTransactionById(String transactionId) {
         for (Transactions transaction : transactions) {
             if (transaction.getId().equals(transactionId)) {
                 return transaction;
@@ -568,10 +569,10 @@ private final List<Business> businesses;
         return null;
     }
 
-    private String getBusinessNameById(String businessId) {
+    String getBusinessNameById(String businessId) {
         for (Business business : businesses) {
-            if (business.getbusinessID().equals(businessId)) {
-                return business.getBuisnessName();
+            if (business.getBusinessID().equals(businessId)) {
+                return business.getBusinessName();
             }
         }
         return null; // Return null if business not found
