@@ -40,29 +40,50 @@
         }
         /* Styles for the navigation bar */
         /* Style the navigation menu */
+        /* Style the navigation menu */
         .navbar {
-          width: 100%;
-          background-color: #555;
-          overflow: auto;
-          display: flex;
-          justify-content: center;
+            width: 100%;
+            background-color: #555;
+            overflow: auto;
+            display: flex;
+            justify-content: center;
+            role: navigation; /* Added role for semantic meaning */
+        }
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
         }
 
         /* Navigation links */
         .navbar a {
-          float: left;
-          padding: 12px;
-          color: white;
-          text-decoration: none;
-          font-size: 17px;
-          width: 33.33%; /* Four equal-width links. If you have two links, use 50%, and 33.33% for three links, etc.. */
-          text-align: center; /* If you want the text to be centered */
+            padding: 12px;
+            color: white;
+            text-decoration: none;
+            font-size: 17px;
+            width: 33.33%;
+            text-align: center;
+            display: inline-block;
+            cursor: pointer;
+            outline: none; /* Remove default outline */
         }
 
         /* Add a background color on mouse-over */
         .navbar a:hover {
-          background-color: #000;
+            background-color: #000;
         }
+
+        /* Add focus styles */
+        .navbar a:focus {
+            background-color: #888;
+        }
+
+        /* Additional styles to make the page look better */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        } }
 
         /* Add responsiveness - on screens less than 500px, make the navigation links appear on top of each other, instead of next to each other */
         @media screen and (max-width: 500px) {
@@ -78,9 +99,9 @@
 <body>
 
 <div class="navbar">
-    <a href="/manager">Accounts List</a>
-    <a href="/bigspenders" >Sanctions</a>
-    <a href="/spendingmap">Spenders Map</a>
+    <a href="/manager" tabindex="1">Accounts List</a>
+    <a href="/bigspenders" tabindex="2">Sanctions</a>
+    <a href="/spendingmap" tabindex="3">Spenders Map</a>
 </div>
 
 <div class="container">

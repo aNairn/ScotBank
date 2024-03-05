@@ -140,9 +140,14 @@ private final List<Business> businesses;
         // Retrieve user's name from the database based on UUID
         String name = getUserNameFromUUID(username);
 
-        double amount = getStartingAmountFromUUID(username);
-        // Retrieve account details (replace these with actual values from your system)
+        // Retrieve current amount based on transactions
+        double currentAmount = calculateCurrentAmountFromTransactions(username);
 
+        // Format currentAmount to display with two decimal places
+        DecimalFormat df = new DecimalFormat("0.00");
+        String formattedCurrentAmount = df.format(currentAmount);
+
+        // Retrieve account details (replace these with actual values from your system)
         String sortCode = generateSortCode(UUID.fromString(username));
         String accountNumber = generateAccountNumber(UUID.fromString(username));
 
@@ -152,7 +157,7 @@ private final List<Business> businesses;
         // Create a model object with the username and account details
         Map<String, Object> model = new HashMap<>();
         model.put("fromPost", name); // Pass the retrieved name instead of UUID
-        model.put("amount", amount);
+        model.put("currentAmount", formattedCurrentAmount); // Use the formatted currentAmount
         model.put("sortCode", sortCode);
         model.put("accountNumber", accountNumber);
 
@@ -161,6 +166,19 @@ private final List<Business> businesses;
         // Set response type and return HTML
         ctx.setResponseType(MediaType.html);
         return html;
+    }
+
+    private double calculateCurrentAmountFromTransactions(String username) {
+        // Logic to calculate current amount based on transactions
+        double startingAmount = getStartingAmountFromUUID(username);
+        List<Transactions> userTransactions = filterTransactionsByFrom(username);
+        double currentAmount = startingAmount;
+
+        for (Transactions transaction : userTransactions) {
+            currentAmount -= transaction.getAmount();
+        }
+
+        return currentAmount;
     }
 
     public static String generateAccountNumber(UUID uuid) {
@@ -408,25 +426,50 @@ private final List<Business> businesses;
     }
 
     private Map<String, Double> calculateSpendingSummary(String username) {
-    Map<String, Double> spendingSummary = new HashMap<>();
+        Map<String, Double> spendingSummary = new HashMap<>();
 
-    try (Connection connection = dataSource.getConnection()) {
-        String sql = "SELECT type, SUM(amount) AS totalAmount FROM transactions2 WHERE sender = ? GROUP BY type";
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setString(1, username);
-        ResultSet resultSet = preparedStatement.executeQuery();
+        try (Connection connection = dataSource.getConnection()) {
+            String sql = "SELECT b.category, SUM(t.amount) AS totalAmount " +
+                    "FROM transactions2 t " +
+                    "JOIN businesses b ON t.receiver = b.id " +
+                    "WHERE t.sender = ? " +
+                    "GROUP BY b.category";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, username);
+            ResultSet resultSet = preparedStatement.executeQuery();
 
-        while (resultSet.next()) {
-            String type = resultSet.getString("type");
-            double totalAmount = resultSet.getDouble("totalAmount") /100;
-            spendingSummary.put(type, totalAmount);
+            while (resultSet.next()) {
+                String category = resultSet.getString("category");
+                double totalAmount = resultSet.getDouble("totalAmount")/10000;
+                spendingSummary.put(category, totalAmount);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
+
+        return spendingSummary;
     }
 
-    return spendingSummary;
-}
+    @POST("/roundup")
+    public void toggleRoundUp(Context ctx) {
+        boolean roundUpEnabled = ctx.body().booleanValue();
+        String username = ctx.session().get("fromPost").value();
+
+        // Update round-up status in the database
+        updateRoundUpStatus(username, roundUpEnabled);
+    }
+
+    private void updateRoundUpStatus(String username, boolean roundUpEnabled) {
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Accounts SET roundUpEnabled = ? WHERE id = ?");
+            preparedStatement.setBoolean(1, roundUpEnabled);
+            preparedStatement.setString(2, username);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     @GET("/bigspenders")
     public String getSanctionedBusinessesReport(Context ctx) throws IOException {
         // Fetch all transactions related to sanctioned businesses

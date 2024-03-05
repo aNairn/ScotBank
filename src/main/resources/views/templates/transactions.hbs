@@ -89,6 +89,10 @@
 
 <div class="content">
     <h1>Transactions</h1>
+    <p> Would you like to enable round up? <input type="checkbox" id="roundUpCheckbox" onchange="toggleRoundUp()"></p>
+
+    <!-- Display round-up pot balance -->
+    <p>Round-Up Pot Balance: £{{roundUpPotBalance}} 0</p>
     <p>Starting Amount: £{{startingAmount}}</p>
     <p>Current Amount: £{{currentAmount}}</p>
     <ul>
@@ -96,12 +100,28 @@
             <li><button onclick="showTransactionDetails('{{this.id}}')">{{this.to}} - £{{this.amount}}0</button></li>
         {{/each}}
     </ul>
+
 </div>
 
 <script>
     function showTransactionDetails(transactionId) {
         // Redirect to transactionsDetails page with transactionId
         window.location.href = "/transactionsDetails?transactionId=" + transactionId;
+    }
+
+    function toggleRoundUp() {
+        var roundUpEnabled = document.getElementById("roundUpCheckbox").checked;
+        fetch('/roundup', {
+            method: 'POST',
+            body: roundUpEnabled.toString(),
+            headers: {
+                'Content-Type': 'text/plain'
+            }
+        }).then(response => {
+            // Handle response
+        }).catch(error => {
+            console.error('Error:', error);
+        });
     }
 </script>
 

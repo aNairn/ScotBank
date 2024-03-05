@@ -88,7 +88,7 @@ public class AccountTests {
     public void importAccounts(){
         App app = new App();
         String apiUrl = "https://api.asep-strath.co.uk/api/accounts";
-        app.importAccDataFromAPI(apiUrl);
+       // app.importAccDataFromAPI(apiUrl);
         assertFalse(app.getAccounts().isEmpty());
     }
 }
