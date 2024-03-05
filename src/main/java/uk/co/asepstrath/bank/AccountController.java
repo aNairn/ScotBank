@@ -85,11 +85,13 @@ private final List<Business> businesses;
         List<Map<String, String>> formattedAccounts = new ArrayList<>();
 
         // Convert startingBalance to String representation in the model
+        DecimalFormat df = new DecimalFormat("0.00");
+
         for (Account account : accounts) {
             Map<String, String> formattedAccount = new HashMap<>();
             formattedAccount.put("id", account.getId().toString());
             formattedAccount.put("name", account.getName());
-            formattedAccount.put("startingBalance", String.valueOf(account.getBalance())); // Convert to String
+            formattedAccount.put("startingBalance", df.format(account.getBalance())); // Convert to String with two decimal places
             formattedAccount.put("roundUpEnabled", String.valueOf(account.isRoundUpEnabled()));
             formattedAccounts.add(formattedAccount);
         }
@@ -463,7 +465,7 @@ private final List<Business> businesses;
         updateRoundUpStatus(username, roundUpEnabled);
     }
 
-    private void updateRoundUpStatus(String username, boolean roundUpEnabled) {
+    void updateRoundUpStatus(String username, boolean roundUpEnabled) {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Accounts SET roundUpEnabled = ? WHERE id = ?");
             preparedStatement.setBoolean(1, roundUpEnabled);
