@@ -16,19 +16,27 @@
         }
 
         /* Navigation links */
+        /* Navigation links */
         .navbar a {
-          float: left;
-          padding: 12px;
-          color: white;
-          text-decoration: none;
-          font-size: 17px;
-          width: 33.33%; /* Four equal-width links. If you have two links, use 50%, and 33.33% for three links, etc.. */
-          text-align: center; /* If you want the text to be centered */
+            padding: 12px;
+            color: white;
+            text-decoration: none;
+            font-size: 17px;
+            width: 33.33%;
+            text-align: center;
+            display: inline-block;
+            cursor: pointer;
+            outline: none; /* Remove default outline */
         }
 
         /* Add a background color on mouse-over */
         .navbar a:hover {
-          background-color: #000;
+            background-color: #000;
+        }
+
+        /* Add focus styles */
+        .navbar a:focus {
+            background-color: #888;
         }
 
         /* Add responsiveness - on screens less than 500px, make the navigation links appear on top of each other, instead of next to each other */
@@ -54,10 +62,10 @@
 </head>
 <body>
 
-<div class="navbar">
-    <a href="/homepage">Account</a>
-    <a href="/transactions">Transactions</a>
-    <a href="/spending" style="background-color: #000;">Spending</a> <!-- Highlight current page -->
+<div class="navbar" role="navigation">
+    <a href="/homepage" aria-label="Account">Account</a>
+    <a href="/transactions" aria-label="Transactions">Transactions</a>
+    <a href="/spending"  aria-label="Spending">Spending</a> <!-- Highlight current page -->
 </div>
 
 <div class="content">

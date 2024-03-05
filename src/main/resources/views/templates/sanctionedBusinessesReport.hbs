@@ -50,19 +50,26 @@
         }
 
         /* Navigation links */
-        .navbar a {
-          float: left;
-          padding: 12px;
-          color: white;
-          text-decoration: none;
-          font-size: 17px;
-          width: 33.33%; /* Three equal-width links. */
-          text-align: center;
+         .navbar a {
+            padding: 12px;
+            color: white;
+            text-decoration: none;
+            font-size: 17px;
+            width: 33.33%;
+            text-align: center;
+            display: inline-block;
+            cursor: pointer;
+            outline: none; /* Remove default outline */
         }
 
         /* Add a background color on mouse-over */
         .navbar a:hover {
-          background-color: #000;
+            background-color: #000;
+        }
+
+        /* Add focus styles */
+        .navbar a:focus {
+            background-color: #888;
         }
 
         /* Add responsiveness - on screens less than 500px, make the navigation links appear on top of each other, instead of next to each other */
@@ -78,19 +85,19 @@
 </head>
 <body>
 
-<div class="navbar">
-    <a href="/manager">Manager Dashboard</a>
+<div class="navbar" role="navigation" aria-label="Main Navigation">
+    <a href="/manager">Accounts List</a>
     <a href="/sanctionedBusinesses" >Sanctions</a>
     <a href="/spendingmap">Spenders Map</a>
 </div>
 
 <div class="container">
     <h1>Sanctioned Businesses Report</h1>
-    <table border="1">
+    <table border="1" role="table" aria-label="Sanctioned Businesses Report">
         <thead>
         <tr>
-            <th>Business Name</th>
-            <th>Total Amount</th>
+            <th scope="col">Business Name</th>
+            <th scope="col">Total Amount</th>
         </tr>
         </thead>
         <tbody>

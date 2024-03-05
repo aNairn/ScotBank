@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transaction Details</title>
     <style>
-        /* Additional styles to make the page look better */
+       /* Additional styles to make the page look better */
         body {
             font-family: Arial, sans-serif;
             margin: 0; /* Remove default margin */
@@ -45,6 +45,25 @@
         .transaction-details button:hover {
             background-color: #000;
         }
+
+        /* Add focus styles */
+
+
+        /* Add keyboard accessibility to buttons */
+        button {
+            cursor: pointer;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #000;
+        }
+        button:focus{
+        background-color: #888;
+        }
+
     </style>
 </head>
 <body>
@@ -62,7 +81,6 @@
 
 
 
-        <!-- Add more details here as needed -->
         <button onclick="goBack()">Go Back</button> <!-- Button to go back to transactions page -->
     </div>
 </div>

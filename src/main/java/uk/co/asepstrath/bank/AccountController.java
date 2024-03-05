@@ -369,6 +369,9 @@ private final List<Business> businesses;
         // Calculate current amount after transactions
         double currentAmount = calculateCurrentAmount(startingAmount, filteredTransactions);
 
+        DecimalFormat df = new DecimalFormat("0.00");
+        String formattedStartingAmount = df.format(startingAmount);
+        String formattedCurrentAmount = df.format(currentAmount);
         // Render the transactions page template with the filtered transactions data
         Template template = handlebars.compile("views/templates/transactions");
         Map<String, Object> model = new HashMap<>();

@@ -17,18 +17,25 @@
 
         /* Navigation links */
         .navbar a {
-          float: left;
-          padding: 12px;
-          color: white;
-          text-decoration: none;
-          font-size: 17px;
-          width: 33.33%; /* Four equal-width links. If you have two links, use 50%, and 33.33% for three links, etc.. */
-          text-align: center; /* If you want the text to be centered */
+            padding: 12px;
+            color: white;
+            text-decoration: none;
+            font-size: 17px;
+            width: 33.33%;
+            text-align: center;
+            display: inline-block;
+            cursor: pointer;
+            outline: none; /* Remove default outline */
         }
 
         /* Add a background color on mouse-over */
         .navbar a:hover {
-          background-color: #000;
+            background-color: #000;
+        }
+
+        /* Add focus styles */
+        .navbar a:focus {
+            background-color: #888;
         }
 
         /* Add responsiveness - on screens less than 500px, make the navigation links appear on top of each other, instead of next to each other */
@@ -76,20 +83,23 @@
         button:hover {
             background-color: #000;
         }
+        button:focus{
+        background-color: #888;
+        }
     </style>
 </head>
 <body>
 
-<div class="navbar">
-    <a href="/homepage">Account</a>
-    <a href="/transactions" class="active">Transactions</a>
-    <a href="/spending">Spending</a>
+<div class="navbar" role="navigation">
+    <a href="/homepage" aria-label="Account">Account</a>
+    <a href="/transactions" class="active" aria-label="Transactions">Transactions</a>
+    <a href="/spending" aria-label="Spending">Spending</a>
 </div>
 
 
 <div class="content">
     <h1>Transactions</h1>
-    <p> Would you like to enable round up? <input type="checkbox" id="roundUpCheckbox" onchange="toggleRoundUp()"></p>
+    <p> Would you like to enable round up? <input type="checkbox" id="roundUpCheckbox" onchange="toggleRoundUp()" aria-label="Enable round up"></p>
 
     <!-- Display round-up pot balance -->
     <p>Round-Up Pot Balance: £{{roundUpPotBalance}} 0</p>
@@ -97,7 +107,7 @@
     <p>Current Amount: £{{currentAmount}}</p>
     <ul>
         {{#each transactions}}
-            <li><button onclick="showTransactionDetails('{{this.id}}')">{{this.to}} - £{{this.amount}}0</button></li>
+            <li><button onclick="showTransactionDetails('{{this.id}}')" aria-label="View transaction details for {{this.to}}">{{this.to}} - £{{this.amount}}0</button></li>
         {{/each}}
     </ul>
 
