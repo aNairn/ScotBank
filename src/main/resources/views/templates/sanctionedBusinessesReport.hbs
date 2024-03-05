@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manager Dashboard</title>
+    <title>Sanctioned Businesses Report</title>
     <style>
         /* Add your CSS styles here */
         body {
@@ -28,6 +28,7 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            border: none;
         }
         th, td {
             padding: 10px;
@@ -55,8 +56,8 @@
           color: white;
           text-decoration: none;
           font-size: 17px;
-          width: 33.33%; /* Four equal-width links. If you have two links, use 50%, and 33.33% for three links, etc.. */
-          text-align: center; /* If you want the text to be centered */
+          width: 33.33%; /* Three equal-width links. */
+          text-align: center;
         }
 
         /* Add a background color on mouse-over */
@@ -70,7 +71,7 @@
             float: none;
             display:inline-block;
             width: 100%;
-            text-align: center; /* If you want the text to be left-aligned on small screens */
+            text-align: center;
           }
         }
     </style>
@@ -78,29 +79,25 @@
 <body>
 
 <div class="navbar">
-    <a href="/manager">Accounts List</a>
-    <a href="/bigspenders" >Sanctions</a>
+    <a href="/manager">Manager Dashboard</a>
+    <a href="/sanctionedBusinesses" >Sanctions</a>
     <a href="/spendingmap">Spenders Map</a>
 </div>
 
 <div class="container">
-    <h1>Manager Dashboard</h1>
-    <table>
+    <h1>Sanctioned Businesses Report</h1>
+    <table border="1">
         <thead>
         <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Starting Balance</th>
-            <th>Round Up Enabled</th>
+            <th>Business Name</th>
+            <th>Total Amount</th>
         </tr>
         </thead>
         <tbody>
-        {{#each accounts}}
+        {{#each report}}
             <tr>
-                <td>{{this.id}}</td>
-                <td>{{this.name}}</td>
-                <td>£{{this.startingBalance}}</td>
-                <td>{{this.roundUpEnabled}}</td>
+                <td>{{@key}}</td>
+                <td>£{{this}}</td>
             </tr>
         {{/each}}
         </tbody>

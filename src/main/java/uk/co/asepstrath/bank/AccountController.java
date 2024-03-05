@@ -16,6 +16,7 @@ import java.sql.*;
 import java.util.*;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
+import java.text.DecimalFormat;
 
 
 
@@ -142,8 +143,8 @@ private final List<Business> businesses;
         double amount = getStartingAmountFromUUID(username);
         // Retrieve account details (replace these with actual values from your system)
 
-        String sortCode = "12-34-56";
-        String accountNumber = "12345678";
+        String sortCode = generateSortCode(UUID.fromString(username));
+        String accountNumber = generateAccountNumber(UUID.fromString(username));
 
         // Render the homepage template with the username and account details
         Template template = handlebars.compile("views/templates/homepage");
@@ -160,6 +161,39 @@ private final List<Business> businesses;
         // Set response type and return HTML
         ctx.setResponseType(MediaType.html);
         return html;
+    }
+
+    public static String generateAccountNumber(UUID uuid) {
+        String uuidString = uuid.toString().replaceAll("-", "");
+        StringBuilder accountNumber = new StringBuilder("");
+        for (int i = 0; i < 8; i++) { // Changed to 8 characters
+            char currentChar = uuidString.charAt(i);
+            if (!Character.isDigit(currentChar)) {
+                int mappedValue = (Character.getNumericValue(currentChar) - Character.getNumericValue('A') + 10) % 10; // Ensure single digit
+                accountNumber.append(mappedValue);
+            } else {
+                accountNumber.append(currentChar);
+            }
+        }
+        return accountNumber.toString();
+    }
+
+    public static String generateSortCode(UUID uuid) {
+        String uuidString = uuid.toString().replaceAll("-", "");
+        StringBuilder sortCode = new StringBuilder("");
+        for (int i = 8; i < 14; i++) { // Changed to 14 characters
+            char currentChar = uuidString.charAt(i);
+            if (!Character.isDigit(currentChar)) {
+                int mappedValue = (Character.getNumericValue(currentChar) - Character.getNumericValue('A') + 10) % 10; // Ensure single digit
+                sortCode.append(mappedValue);
+            } else {
+                sortCode.append(currentChar);
+            }
+            if ((i - 8) % 2 == 1 && i < 13) { // Add hyphen after every two characters, except for the last group
+                sortCode.append("-");
+            }
+        }
+        return sortCode.toString();
     }
 
 
@@ -311,10 +345,18 @@ private final List<Business> businesses;
         // Filter transactions based on the 'from' field
         List<Transactions> filteredTransactions = filterTransactionsByFrom(fromPost);
 
+        // Calculate starting amount
+        double startingAmount = getStartingAmountFromUUID(fromPost);
+
+        // Calculate current amount after transactions
+        double currentAmount = calculateCurrentAmount(startingAmount, filteredTransactions);
+
         // Render the transactions page template with the filtered transactions data
         Template template = handlebars.compile("views/templates/transactions");
         Map<String, Object> model = new HashMap<>();
         model.put("transactions", filteredTransactions);
+        model.put("startingAmount", startingAmount);
+        model.put("currentAmount", currentAmount);
 
         String html = template.apply(model);
 
@@ -323,7 +365,17 @@ private final List<Business> businesses;
         return html;
     }
 
-    private List<Transactions> filterTransactionsByFrom(String fromPost) {
+    private double calculateCurrentAmount(double startingAmount, List<Transactions> transactions) {
+        double currentAmount = startingAmount;
+        for (Transactions transaction : transactions) {
+            if(transaction.getTimestamp().contains(""))
+            currentAmount -= transaction.getAmount();
+        }
+        return currentAmount;
+    }
+
+
+    private List<Transactions> filterTransactionsByFrom(String fromPost) { ////////////
         List<Transactions> filteredTransactions = new ArrayList<>();
         for (Transactions transaction : transactions) {
             if (transaction.getFrom().equals(fromPost)) {
@@ -333,19 +385,19 @@ private final List<Business> businesses;
         return filteredTransactions;
     }
 
-  /*  @GET("/spending")
+    @GET("/spending")
     public String getSpendingPage(Context ctx) throws IOException {
         String username = ctx.session().get("fromPost").value();
 
         // Calculate spending summary
-        Map<String, Double> spendingSummary = calculateSpendingSummary();
+        Map<String, Double> spendingSummary = calculateSpendingSummary(username);
 
         // Render the spending page template with the spending summary and username
         Template template = handlebars.compile("views/templates/spending");
 
         // Create a model object with the spending summary and username
         Map<String, Object> model = new HashMap<>();
-        model.put("fromPost", username);
+
         model.put("spendingSummary", spendingSummary);
 
         String html = template.apply(model);
@@ -353,23 +405,93 @@ private final List<Business> businesses;
         // Set response type and return HTML
         ctx.setResponseType(MediaType.html);
         return html;
-    }*/
-/*
-    private Map<String, Double> calculateSpendingSummary() {
-        Map<String, Double> spendingSummary = new HashMap<>();
+    }
 
-        // Iterate through transactions and categorize spending
-        for (Transaction transaction : transactions) {
-            String category = transaction.getCategory(); // Assuming Transaction class has getCategory method
-            double amount = transaction.getAmount(); // Assuming Transaction class has getAmount method
+    private Map<String, Double> calculateSpendingSummary(String username) {
+    Map<String, Double> spendingSummary = new HashMap<>();
 
-            // Update spending summary
-            spendingSummary.put(category, spendingSummary.getOrDefault(category, 0.0) + amount);
+    try (Connection connection = dataSource.getConnection()) {
+        String sql = "SELECT type, SUM(amount) AS totalAmount FROM transactions2 WHERE sender = ? GROUP BY type";
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setString(1, username);
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        while (resultSet.next()) {
+            String type = resultSet.getString("type");
+            double totalAmount = resultSet.getDouble("totalAmount") /100;
+            spendingSummary.put(type, totalAmount);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return spendingSummary;
+}
+    @GET("/bigspenders")
+    public String getSanctionedBusinessesReport(Context ctx) throws IOException {
+        // Fetch all transactions related to sanctioned businesses
+        List<Transactions> sanctionedTransactions = getSanctionedTransactions();
+
+        // Aggregate transactions by business
+        Map<String, String> aggregatedReport = aggregateTransactionsByBusiness(sanctionedTransactions);
+
+        // Render the report template with the aggregated data
+        Template template = handlebars.compile("views/templates/sanctionedBusinessesReport");
+        Map<String, Object> model = new HashMap<>();
+        model.put("report", aggregatedReport);
+
+        String html = template.apply(model);
+
+        // Set response type and return HTML
+        ctx.setResponseType(MediaType.html);
+        return html;
+    }
+
+    private List<Transactions> getSanctionedTransactions() {
+        List<Transactions> sanctionedTransactions = new ArrayList<>();
+
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM transactions2 WHERE receiver IN (SELECT id FROM businesses WHERE sanctioned = true)");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                Transactions transaction = new Transactions(
+                        resultSet.getString("timestamp"),
+                        resultSet.getDouble("amount"),
+                        resultSet.getString("sender"),
+                        resultSet.getString("transaction_id"),
+                        resultSet.getString("receiver"),
+                        resultSet.getString("type")
+                );
+                sanctionedTransactions.add(transaction);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
-        return spendingSummary;
+        return sanctionedTransactions;
     }
-    */
+
+    private Map<String, String> aggregateTransactionsByBusiness(List<Transactions> transactions) {
+        Map<String, String> aggregatedReport = new HashMap<>();
+
+        DecimalFormat df = new DecimalFormat("0.00");
+
+        for (Transactions transaction : transactions) {
+            String businessId = transaction.getTo();
+            double amount = Math.round(transaction.getAmount() * 1) / 100.0;
+            String businessName = getBusinessNameById(businessId);
+            String formattedAmount = df.format(amount);
+
+            if (aggregatedReport.containsKey(businessName)) {
+                double currentAmount = Double.parseDouble(aggregatedReport.get(businessName));
+                aggregatedReport.put(businessName, df.format(currentAmount + amount));
+            } else {
+                aggregatedReport.put(businessName, formattedAmount);
+            }
+        }
+
+        return aggregatedReport;
+    }
   @GET("/transactionsDetails")
   public String getTransactionDetailsPage(Context ctx) throws IOException {
       String transactionId = ctx.query("transactionId").value();

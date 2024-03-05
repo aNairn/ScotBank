@@ -80,10 +80,15 @@ list-style-type: none;
 <div class="content">
     <p>Account Details:</p>
     <ul>
-        <li>Amount: £{{amount}}</li>
+        <li>Starting Amount: £{{amount}}</li>
         <li>Sort-Code: {{sortCode}}</li>
         <li>Account-Number: {{accountNumber}}</li>
     </ul>
+
+    <p>Round-Up Enabled: {{#if account.roundUpEnabled}}Yes{{else}}No{{/if}}</p>
+    {{#if account.roundUpEnabled}}
+        <p>Round-Up Pot: £{{account.roundUpPot}}</p>
+    {{/if}}
 </div>
 
 </body>
