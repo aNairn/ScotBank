@@ -1,0 +1,5 @@
+Implement log out button
+read in all info from trasnactions API from (multiple pages for transactions)
+Implement round up
+Increase testing on account controller
+refactor code for classes to increase modularity 
