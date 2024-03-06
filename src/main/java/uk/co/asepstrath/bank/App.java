@@ -280,8 +280,8 @@ public class App extends Jooby {
             try {
                 Connection connection = ds.getConnection();
 
-                try {
-                    Statement stmt = connection.createStatement();
+                try (Statement stmt = connection.createStatement()){
+
                     stmt.executeUpdate("CREATE TABLE IF NOT EXISTS transactions2 (" +
                             "id INT AUTO_INCREMENT PRIMARY KEY," +
                             "timestamp TIMESTAMP," +
