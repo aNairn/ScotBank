@@ -24,7 +24,7 @@ import java.text.DecimalFormat;
 @Path({"/"})
 public class AccountController extends Jooby {
     private final List<Transactions> transactions;
-private final List<Business> businesses;
+    private final List<Business> businesses;
     private final DataSource dataSource;
     private final Logger logger;
     private final List<Account> accounts;
@@ -126,13 +126,6 @@ private final List<Business> businesses;
 
         return accounts;
     }
-
-
-
-
-
-
-
 
     @GET("/homepage")
     public String getHomePage(Context ctx) throws IOException {
@@ -390,8 +383,9 @@ private final List<Business> businesses;
     private double calculateCurrentAmount(double startingAmount, List<Transactions> transactions) {
         double currentAmount = startingAmount;
         for (Transactions transaction : transactions) {
-            if(transaction.getTimestamp().contains(""))
-            currentAmount -= transaction.getAmount();
+            if(transaction.getTimestamp().contains("")){
+                currentAmount -= transaction.getAmount();
+                }
         }
         return currentAmount;
     }
