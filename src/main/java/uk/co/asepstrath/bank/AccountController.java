@@ -440,14 +440,19 @@ private final List<Business> businesses;
 
     private Map<String, Double> calculateSpendingSummary(String username) {
         Map<String, Double> spendingSummary = new HashMap<>();
-
-        try (Connection connection = dataSource.getConnection()) {
-            String sql = "SELECT b.category, SUM(t.amount) AS totalAmount " +
-                    "FROM transactions2 t " +
-                    "JOIN businesses b ON t.receiver = b.id " +
-                    "WHERE t.sender = ? " +
-                    "GROUP BY b.category";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        String sql = "SELECT b.category, SUM(t.amount) AS totalAmount " +
+                "FROM transactions2 t " +
+                "JOIN businesses b ON t.receiver = b.id " +
+                "WHERE t.sender = ? " +
+                "GROUP BY b.category";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+//            String sql = "SELECT b.category, SUM(t.amount) AS totalAmount " +
+//                    "FROM transactions2 t " +
+//                    "JOIN businesses b ON t.receiver = b.id " +
+//                    "WHERE t.sender = ? " +
+//                    "GROUP BY b.category";
+//            PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, username);
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -474,8 +479,9 @@ private final List<Business> businesses;
     }
 
     void updateRoundUpStatus(String username, boolean roundUpEnabled) {
-        try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Accounts SET roundUpEnabled = ? WHERE id = ?");
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Accounts SET roundUpEnabled = ? WHERE id = ?")) {
+            //PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Accounts SET roundUpEnabled = ? WHERE id = ?");
             preparedStatement.setBoolean(1, roundUpEnabled);
             preparedStatement.setString(2, username);
             preparedStatement.executeUpdate();
@@ -508,8 +514,9 @@ private final List<Business> businesses;
     private List<Transactions> getSanctionedTransactions() {
         List<Transactions> sanctionedTransactions = new ArrayList<>();
 
-        try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM transactions2 WHERE receiver IN (SELECT id FROM businesses WHERE sanctioned = true)");
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM transactions2 WHERE receiver IN (SELECT id FROM businesses WHERE sanctioned = true)")) {
+           // PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM transactions2 WHERE receiver IN (SELECT id FROM businesses WHERE sanctioned = true)");
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 Transactions transaction = new Transactions(
