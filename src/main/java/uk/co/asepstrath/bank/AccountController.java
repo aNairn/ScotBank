@@ -451,7 +451,8 @@ public class AccountController extends Jooby {
                 spendingSummary.put(category, totalAmount);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            System.out.println("Error connecting to database");
         }
 
         return spendingSummary;
@@ -473,7 +474,8 @@ public class AccountController extends Jooby {
             preparedStatement.setString(2, username);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            System.out.println("Error connecting to database");
         }
     }
 
@@ -515,7 +517,8 @@ public class AccountController extends Jooby {
                 sanctionedTransactions.add(transaction);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            System.out.println("Error connecting to database");
         }
 
         return sanctionedTransactions;
