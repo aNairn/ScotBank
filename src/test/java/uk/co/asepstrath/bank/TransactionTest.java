@@ -196,7 +196,8 @@ class TransactionTest {
         // Assert
         assertNotNull(toStringResult);
         assertTrue(toStringResult.contains("Test Description"));
-        assertEquals(100.50, 100.50);
+        assertEquals(100.50, transaction.getAmount());
+
         assertTrue(toStringResult.contains("Test Category"));
     }
 
