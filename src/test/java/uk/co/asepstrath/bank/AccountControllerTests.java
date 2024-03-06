@@ -1,6 +1,7 @@
 package uk.co.asepstrath.bank;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.slf4j.Logger;
 
 import javax.sql.DataSource;
@@ -54,5 +55,28 @@ public class AccountControllerTests {
         // Assert
         assertNull(foundTransaction);
 
+    }
+
+    @Test
+    void testCalculateCurrentAmountFromTransactions() {
+        // Arrange
+        String username = "sampleUser";
+        AccountController accountController = new AccountController(null, null, null, null, null);
+
+        // Mock transactions for the user
+        List<Transactions> userTransactions = new ArrayList<>();
+        userTransactions.add(new Transactions("123456", 50.0, "sampleUser", "transaction1", "receiver1", "type1"));
+        userTransactions.add(new Transactions("789012", 25.0, "sampleUser", "transaction2", "receiver2", "type2"));
+
+        // Mock getStartingAmountFromUUID and filterTransactionsByFrom methods
+        AccountController mockController = Mockito.spy(accountController);
+        Mockito.doReturn(100.0).when(mockController).getStartingAmountFromUUID(username);
+        Mockito.doReturn(userTransactions).when(mockController).filterTransactionsByFrom(username);
+
+        // Act
+        double result = mockController.calculateCurrentAmountFromTransactions(username);
+
+        // Assert
+        assertEquals(100.0 - 50.0 - 25.0, result);
     }
 }

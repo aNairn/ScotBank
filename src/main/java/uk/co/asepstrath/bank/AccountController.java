@@ -305,7 +305,7 @@ public class AccountController extends Jooby {
         return null; // Return null if user not found or any error occurs
     }
 
-    private double getStartingAmountFromUUID(String uuid) {
+    double getStartingAmountFromUUID(String uuid) {
         try (Connection connection = dataSource.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement("SELECT startingBalance FROM Accounts WHERE id = ?")) {
 
             preparedStatement.setString(1, uuid);
@@ -400,7 +400,7 @@ public class AccountController extends Jooby {
     }
 
 
-    private List<Transactions> filterTransactionsByFrom(String fromPost) { ////////////
+    List<Transactions> filterTransactionsByFrom(String fromPost) { ////////////
         List<Transactions> filteredTransactions = new ArrayList<>();
         for (Transactions transaction : transactions) {
             if (transaction.getFrom().equals(fromPost)) {
