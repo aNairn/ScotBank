@@ -457,7 +457,8 @@ private final List<Business> businesses;
                 spendingSummary.put(category, totalAmount);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            System.out.println("Error connecting to the database");
         }
 
         return spendingSummary;
@@ -479,7 +480,8 @@ private final List<Business> businesses;
             preparedStatement.setString(2, username);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            System.out.println("Error connecting to the database");
         }
     }
 
@@ -521,7 +523,8 @@ private final List<Business> businesses;
                 sanctionedTransactions.add(transaction);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            System.out.println("Error connecting to database");
         }
 
         return sanctionedTransactions;
