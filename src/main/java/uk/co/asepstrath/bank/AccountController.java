@@ -109,8 +109,9 @@ private final List<Business> businesses;
     List<Account> getAccountsFromDatabase() {
         List<Account> accounts = new ArrayList<>();
 
-        try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Accounts");
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Accounts")) {
+
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 UUID id = UUID.fromString(resultSet.getString("id"));
@@ -123,7 +124,8 @@ private final List<Business> businesses;
                 accounts.add(account);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            System.out.println("Error connecting to database");
         }
 
         return accounts;
@@ -292,30 +294,35 @@ private final List<Business> businesses;
 
     }
 
-    String getUserNameFromUUID(String uuid) {
-        try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT name FROM Accounts WHERE id = ?");
+
+    private String getUserNameFromUUID(String uuid) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT name FROM Accounts WHERE id = ?")) {
+
+
             preparedStatement.setString(1, uuid);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 return resultSet.getString("name");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            System.out.println("Error connecting to database");
         }
         return null; // Return null if user not found or any error occurs
     }
 
     private double getStartingAmountFromUUID(String uuid) {
-        try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT startingBalance FROM Accounts WHERE id = ?");
+        try (Connection connection = dataSource.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement("SELECT startingBalance FROM Accounts WHERE id = ?")) {
+
             preparedStatement.setString(1, uuid);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 return resultSet.getDouble("startingBalance");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            System.out.println("Error connecting to database");
         }
         return 0.0; // Return 0.0 if user not found or any error occurs
     }
@@ -349,13 +356,13 @@ private final List<Business> businesses;
     }
 
     private boolean validateUUID(String providedUUID) {
-        try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM Accounts WHERE id = ?");
+        try (Connection connection = dataSource.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM Accounts WHERE id = ?")) {
             preparedStatement.setString(1, providedUUID);
             ResultSet resultSet = preparedStatement.executeQuery();
             return resultSet.next(); // If there's a matching UUID in the database, return true
         } catch (SQLException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            System.out.println("Error connecting to database");
             return false; // If an exception occurs or no matching UUID is found, return false
         }
     }
