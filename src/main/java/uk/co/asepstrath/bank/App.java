@@ -134,54 +134,64 @@ public class App extends Jooby {
         }
     }
 
-    public static void importTransactionDataFromAPI(String apiUrl, String accessToken) {
+    public static void importTransactionDataFromAPI(String apiUrl, String accessToken, int size) {
         try {
-            String apiResponse = new App().makeAuthenticatedAPICall(apiUrl, accessToken);
             // Create HttpClient
             HttpClient client = HttpClient.newHttpClient();
-            // Create GET request
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(apiUrl))
-                    .header("Accept", "application/xml")
-                    .build();
-            // Send/Receive
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            if (response.statusCode() == 200) {
-                // Convert XML response to JSON
-                JSONObject json = XML.toJSONObject(response.body());
-                // Extract 'results' array from JSON
-                JSONObject pageResult = json.getJSONObject("pageResult");
-                if (pageResult.getBoolean("hasNext")) {
-                    // Assuming 'results' is a JSON array
-                    JSONArray results = pageResult.getJSONArray("results");
-                    // Process each transaction
-                    for (int i = 0; i < results.length(); i++) {
-                        JSONObject transactionJson = results.getJSONObject(i);
-                        // Extract transaction details
-                        String timestamp = transactionJson.getString("timestamp");
-                        double amount = transactionJson.getDouble("amount");
-                        String from = transactionJson.getString("from");
-                        String id = transactionJson.getString("id");
-                        String to = transactionJson.getString("to");
-                        String type = transactionJson.getString("type");
-                        // Process the transaction, e.g., save to database, etc.
-                        // Example:
-                        Transactions transaction = new Transactions(timestamp, amount, from, id, to, type);
+            int page = 1; // Start from page 1
 
-                        transactionsList.add(transaction);
-                        System.out.println("Adding transaction: " + transactionsList.get(i));
+            while (true) {
+                // Create GET request with pagination parameters
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(URI.create(apiUrl + "?page=" + page + "&size=" + size))
+                        .header("Accept", "application/xml")
+                        .build();
 
-                        // Add the transaction to your list or process it as required
-                        System.out.println("Processed transaction: " + transaction);
+                // Send/Receive
+                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+                if (response.statusCode() == 200) {
+                    // Convert XML response to JSON
+                    JSONObject json = XML.toJSONObject(response.body());
+                    // Extract 'pageResult' object from JSON
+                    JSONObject pageResult = json.getJSONObject("pageResult");
+                    if (pageResult.getBoolean("hasNext")) {
+                        // Assuming 'results' is a JSON array
+                        JSONArray results = pageResult.getJSONArray("results");
+                        // Process each transaction
+                        for (int i = 0; i < results.length(); i++) {
+                            JSONObject transactionJson = results.getJSONObject(i);
+                            // Extract transaction details
+                            String timestamp = transactionJson.getString("timestamp");
+                            double amount = transactionJson.getDouble("amount");
+                            String from = transactionJson.getString("from");
+                            String id = transactionJson.getString("id");
+                            String to = transactionJson.getString("to");
+                            String type = transactionJson.getString("type");
+                            // Process the transaction, e.g., save to database, etc.
+                            // Example:
+                            Transactions transaction = new Transactions(timestamp, amount, from, id, to, type);
+
+                            transactionsList.add(transaction);
+                            System.out.println("Adding transaction: " + transactionsList.get(i));
+
+                            // Add the transaction to your list or process it as required
+                            System.out.println("Processed transaction: " + transaction);
+                        }
+                        // Move to the next page
+                        page++;
+                    } else {
+                        // No more pages, break out of the loop
+                        break;
                     }
+                } else {
+                    throw new Error("Failed to fetch data from the API. HTTP status code: " + response.statusCode());
                 }
-            } else {
-                throw new Error("Failed to fetch data from the API. HTTP status code: " + response.statusCode());
             }
         } catch (Exception e) {
             //e.printStackTrace();
-            System.out.println("Could not fetch data from API");
+            System.out.println("Could not fetch data from API: " + e.getMessage());
         }
     }
     public static void importAccDataFromAPI(String apiUrl, String accessToken){
@@ -249,7 +259,7 @@ public class App extends Jooby {
         System.out.println("Accounts michael importing from API:");
 
         importAccDataFromAPI("https://api.asep-strath.co.uk/api/accounts", accessToken);
-        importTransactionDataFromAPI("https://api.asep-strath.co.uk/api/transactions", accessToken); //uses xml then need to parse it through
+        importTransactionDataFromAPI("https://api.asep-strath.co.uk/api/transactions", accessToken,100); //uses xml then need to parse it through
          importBusinessDataFromAPI("https://api.asep-strath.co.uk/api/businesses", accessToken);
 
         //Get the accounts after importing from the API
