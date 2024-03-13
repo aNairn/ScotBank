@@ -24,7 +24,7 @@ import java.text.DecimalFormat;
 @Path({"/"})
 public class AccountController extends Jooby {
     private final List<Transactions> transactions;
-private final List<Business> businesses;
+    private final List<Business> businesses;
     private final DataSource dataSource;
     private final Logger logger;
     private final List<Account> accounts;
@@ -130,13 +130,6 @@ private final List<Business> businesses;
 
         return accounts;
     }
-
-
-
-
-
-
-
 
     @GET("/homepage")
     public String getHomePage(Context ctx) throws IOException {
@@ -312,7 +305,7 @@ private final List<Business> businesses;
         return null; // Return null if user not found or any error occurs
     }
 
-    private double getStartingAmountFromUUID(String uuid) {
+    double getStartingAmountFromUUID(String uuid) {
         try (Connection connection = dataSource.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement("SELECT startingBalance FROM Accounts WHERE id = ?")) {
 
             preparedStatement.setString(1, uuid);
@@ -399,14 +392,15 @@ private final List<Business> businesses;
     private double calculateCurrentAmount(double startingAmount, List<Transactions> transactions) {
         double currentAmount = startingAmount;
         for (Transactions transaction : transactions) {
-            if(transaction.getTimestamp().contains(""))
-            currentAmount -= transaction.getAmount();
+            if(transaction.getTimestamp().contains("")){
+                currentAmount -= transaction.getAmount();
+                }
         }
         return currentAmount;
     }
 
 
-    private List<Transactions> filterTransactionsByFrom(String fromPost) { ////////////
+    List<Transactions> filterTransactionsByFrom(String fromPost) { ////////////
         List<Transactions> filteredTransactions = new ArrayList<>();
         for (Transactions transaction : transactions) {
             if (transaction.getFrom().equals(fromPost)) {
@@ -464,6 +458,7 @@ private final List<Business> businesses;
         } catch (SQLException e) {
             //e.printStackTrace();
             System.out.println("Error connecting to the database");
+
         }
 
         return spendingSummary;
@@ -488,6 +483,7 @@ private final List<Business> businesses;
         } catch (SQLException e) {
             //e.printStackTrace();
             System.out.println("Error connecting to the database");
+
         }
     }
 
