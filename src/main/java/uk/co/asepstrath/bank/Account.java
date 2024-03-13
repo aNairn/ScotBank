@@ -5,6 +5,7 @@
 
 package uk.co.asepstrath.bank;
 
+import java.text.DecimalFormat;
 import java.util.UUID;
 
 public class Account {
@@ -12,7 +13,7 @@ public class Account {
     private String name;
     private double balance;
     private boolean roundUpEnabled;
-
+    private String address;
     public Account(String name, double accountAmount) {
         this.name = name;
         this.balance = accountAmount;
@@ -23,7 +24,17 @@ public class Account {
         this.name = name;
         this.balance = startingBalance;
         this.roundUpEnabled = roundUpEnabled;
+
     }
+
+   /* public Account(UUID fromString, String name, double startingBalance, boolean roundUpEnabled, String address) {
+        this.id = fromString;
+        this.name = name;
+        this.balance = startingBalance;
+        this.roundUpEnabled = roundUpEnabled;
+        this.address = address;
+
+    }*/
 
     public void deposit(double amount) {
         this.balance += amount;
@@ -51,8 +62,15 @@ public class Account {
 
     public boolean isRoundUpEnabled(){return this.roundUpEnabled;}
 
+
+
+
+    // Method to set the formatted amount
+
+
+
     @Override
     public String toString() {
-        return "ID: " + id + " Name: " + name + ", Balance: £" + balance + ", Round Up Enabled: " + roundUpEnabled;
+        return "ID: " + id + " Name: " + name + ", Balance: £" + balance + ", Round Up Enabled: " + roundUpEnabled ;
     }
 }

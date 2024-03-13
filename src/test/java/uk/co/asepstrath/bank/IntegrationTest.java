@@ -14,7 +14,7 @@ public class IntegrationTest {
 
     private final OkHttpClient client = new OkHttpClient();
 
-
+/*
     public void testHandleLoginFormSubmissionWithValidUsername(int serverPort) throws IOException {
         // Create a form body with a valid username
         RequestBody formBody = new FormBody.Builder()
@@ -33,7 +33,7 @@ public class IntegrationTest {
             assertEquals("/homepage", response.header("Location"));
         }
     }
-
+*/
     @Test
     public void testHandleLoginFormSubmissionWithEmptyUsername(int serverPort) throws IOException {
         // Create a form body with an empty username

@@ -104,7 +104,35 @@
         {{#each report}}
             <tr>
                 <td>{{@key}}</td>
-                <td>£{{this}}</td>
+                <td>£{{this.totalAmount}}0</td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <table border="1" role="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Timestamp</th>
+                            <th scope="col">Amount</th>
+                            <th scope="col">Sender</th>
+                            <th scope="col">Transaction ID</th>
+                            <th scope="col">Receiver</th>
+                            <th scope="col">Type</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {{#each this.transactions}}
+                            <tr>
+                                <td>{{this.timestamp}}</td>
+                                <td>£{{this.amount}}0</td>
+                                <td>{{this.from}}</td>
+                                <td>{{this.id}}</td>
+                                <td>{{this.to}}</td>
+                                <td>{{this.type}}</td>
+                            </tr>
+                        {{/each}}
+                        </tbody>
+                    </table>
+                </td>
             </tr>
         {{/each}}
         </tbody>

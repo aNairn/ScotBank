@@ -105,9 +105,19 @@
     <p>Round-Up Pot Balance: £{{roundUpPotBalance}} 0</p>
     <p>Starting Amount: £{{startingAmount}}</p>
     <p>Current Amount: £{{currentAmount}}</p>
+
+    <br>
+    <p>Transactions out of this account:</p>
     <ul>
-        {{#each transactions}}
-            <li><button onclick="showTransactionDetails('{{this.id}}')" aria-label="View transaction details for {{this.to}}">{{this.to}} - £{{this.amount}}0</button></li>
+        {{#each outgoingTransactions }}
+            <li><button onclick="showTransactionDetails('{{this.id}}')" aria-label="View transaction details for {{this.to}}">{{this.to}} - £{{ this.amountFormatted}}</button></li>
+        {{/each}}
+    </ul>
+
+    <p>Transactions into this account:</p>
+    <ul>
+        {{#each incomingTransactions}}
+            <li><button onclick="showTransactionDetails('{{this.id}}')" aria-label="View transaction details for {{this.from}}">{{this.from}} - £{{ this.amountFormatted}}</button></li>
         {{/each}}
     </ul>
 
@@ -133,6 +143,11 @@
             console.error('Error:', error);
         });
     }
+
+    function formatAmount(amount) {
+            return parseFloat(amount).toFixed(2);
+        }
+
 </script>
 
 

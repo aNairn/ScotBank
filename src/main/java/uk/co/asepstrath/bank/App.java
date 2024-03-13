@@ -217,6 +217,7 @@ public class App extends Jooby {
                     String name = accountJson.getString("name");
                     double startingBalance = accountJson.getDouble("startingBalance");
                     boolean roundUpEnabled = accountJson.getBoolean("roundUpEnabled");
+
                     // Create an Account object using the constructor for API data
                     Account account = new Account(UUID.fromString(id), name, startingBalance, roundUpEnabled);
                     //System.out.println("Parsed JSON Array:\n" + jsonArray.get(i));

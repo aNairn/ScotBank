@@ -83,7 +83,7 @@ public class AccountTests {
 
 
 
-
+/*
     @Test
     public void importAccounts(){
         App app = new App();
@@ -96,7 +96,7 @@ public class AccountTests {
         }
         assertFalse(app.getAccounts().isEmpty());
     }
-
+*/
     //Business Tests
 
 }

@@ -1,5 +1,7 @@
 package uk.co.asepstrath.bank;
 
+import java.text.DecimalFormat;
+
 public class Transactions {
     private String timestamp;
     private double amount;
@@ -7,6 +9,8 @@ public class Transactions {
     private String id;
     private String to;
     private String type;
+    private String amountFormatted; // New field to store the formatted amount
+
 
     public Transactions(String timestamp, double amount, String from, String id, String to, String type) {
         this.timestamp = timestamp;
@@ -15,6 +19,8 @@ public class Transactions {
         this.id = id;
         this.to = to;
         this.type = type;
+        setAmountFormatted(); // Set the formatted amount upon object creation
+
     }
 
     public String getTimestamp() {
@@ -59,6 +65,16 @@ public class Transactions {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getAmountFormatted() {
+        return amountFormatted;
+    }
+
+    // Method to set the formatted amount
+    public void setAmountFormatted() {
+        DecimalFormat df = new DecimalFormat("0.00");
+        this.amountFormatted = df.format(this.amount);
     }
 
     @Override

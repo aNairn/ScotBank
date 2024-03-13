@@ -73,10 +73,6 @@ public class AccountController extends Jooby {
         // Fetch account details from the database
         List<Account> accounts = getAccountsFromDatabase();
 
-        for (Account account : accounts) {
-            System.out.println(account);
-        }
-
         // Render the manager.hbs template with the account details
         Template template = handlebars.compile("views/templates/managerView");
 
@@ -91,7 +87,7 @@ public class AccountController extends Jooby {
             Map<String, String> formattedAccount = new HashMap<>();
             formattedAccount.put("id", account.getId().toString());
             formattedAccount.put("name", account.getName());
-            formattedAccount.put("startingBalance", df.format(account.getBalance())); // Convert to String with two decimal places
+            formattedAccount.put("currentAmount", df.format(calculateCurrentAmountFromTransactions(account.getId().toString()))); // Get current amount for each account
             formattedAccount.put("roundUpEnabled", String.valueOf(account.isRoundUpEnabled()));
             formattedAccounts.add(formattedAccount);
         }
@@ -287,7 +283,10 @@ public class AccountController extends Jooby {
 
     }
 
-
+    private static String formatAmount(double amount) {
+        DecimalFormat df = new DecimalFormat("0.00");
+        return df.format(amount);
+    }
     private String getUserNameFromUUID(String uuid) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("SELECT name FROM Accounts WHERE id = ?")) {
@@ -363,24 +362,33 @@ public class AccountController extends Jooby {
     public String getTransactionsPage(Context ctx) throws IOException {
         String fromPost = ctx.session().get("fromPost").value();
 
-        // Filter transactions based on the 'from' field
-        List<Transactions> filteredTransactions = filterTransactionsByFrom(fromPost);
+        // Retrieve all transactions involving the specified account
+        List<Transactions> relevantTransactions = getAllTransactionsInvolvingAccount(fromPost);
 
         // Calculate starting amount
         double startingAmount = getStartingAmountFromUUID(fromPost);
 
         // Calculate current amount after transactions
-        double currentAmount = calculateCurrentAmount(startingAmount, filteredTransactions);
+        double currentAmount = calculateCurrentAmount(startingAmount, relevantTransactions, fromPost);
 
         DecimalFormat df = new DecimalFormat("0.00");
         String formattedStartingAmount = df.format(startingAmount);
         String formattedCurrentAmount = df.format(currentAmount);
+
+        // Filter out outgoing and incoming transactions (excluding deposits)
+        List<Transactions> outgoingTransactions = getOutgoingTransactions(relevantTransactions, fromPost);
+        List<Transactions> incomingTransactions = getIncomingTransactions(relevantTransactions, fromPost);
+
+        for (Transactions transaction : relevantTransactions) {
+            transaction.setAmountFormatted();
+        }
         // Render the transactions page template with the filtered transactions data
         Template template = handlebars.compile("views/templates/transactions");
         Map<String, Object> model = new HashMap<>();
-        model.put("transactions", filteredTransactions);
-        model.put("startingAmount", startingAmount);
-        model.put("currentAmount", currentAmount);
+        model.put("outgoingTransactions", outgoingTransactions);
+        model.put("incomingTransactions", incomingTransactions);
+        model.put("startingAmount", formattedStartingAmount);
+        model.put("currentAmount", formattedCurrentAmount);
 
         String html = template.apply(model);
 
@@ -389,16 +397,82 @@ public class AccountController extends Jooby {
         return html;
     }
 
-    private double calculateCurrentAmount(double startingAmount, List<Transactions> transactions) {
+    private List<Transactions> getOutgoingTransactions(List<Transactions> transactions, String accountUUID) {
+        List<Transactions> outgoingTransactions = new ArrayList<>();
+        for (Transactions transaction : transactions) {
+            if (transaction.getFrom().equals(accountUUID) && !isDeposit(transaction)) {
+                outgoingTransactions.add(transaction);
+            }
+        }
+        return outgoingTransactions;
+    }
+
+    private List<Transactions> getIncomingTransactions(List<Transactions> transactions, String accountUUID) {
+        List<Transactions> incomingTransactions = new ArrayList<>();
+        for (Transactions transaction : transactions) {
+            if (transaction.getTo().equals(accountUUID) && !isDeposit(transaction)) {
+                incomingTransactions.add(transaction);
+            }
+        }
+        return incomingTransactions;
+    }
+
+    private boolean isDeposit(Transactions transaction) {
+        return transaction.getType().equals("DEPOSIT");
+    }
+
+    private List<Transactions> getReceivedTransactions(List<Transactions> transactions, String accountUUID) {
+        List<Transactions> receivedTransactions = new ArrayList<>();
+        for (Transactions transaction : transactions) {
+            if (transaction.getTo().equals(accountUUID)) {
+                receivedTransactions.add(transaction);
+            }
+        }
+        return receivedTransactions;
+    }
+
+
+    private List<Transactions> getAllTransactionsInvolvingAccount(String accountUUID) {
+        List<Transactions> relevantTransactions = new ArrayList<>();
+        for (Transactions transaction : transactions) {
+            if (transaction.getFrom().equals(accountUUID) || transaction.getTo().equals(accountUUID)) {
+                relevantTransactions.add(transaction);
+            }
+        }
+        return relevantTransactions;
+    }
+
+    private double calculateCurrentAmount(double startingAmount, List<Transactions> transactions, String accountUUID) {
         double currentAmount = startingAmount;
         for (Transactions transaction : transactions) {
-            if(transaction.getTimestamp().contains("")){
-                currentAmount -= transaction.getAmount();
-                }
+            String transactionType = transaction.getType();
+            switch (transactionType) {
+                case "PAYMENT":
+                case "WITHDRAWAL":
+                    if (transaction.getFrom().equals(accountUUID)) {
+                        currentAmount -= transaction.getAmount();
+                    }
+                    break;
+                case "DEPOSIT":
+                case "COLLECT_ROUNDUPS":
+                    if (transaction.getTo().equals(accountUUID)) {
+                        currentAmount += transaction.getAmount();
+                    }
+                    break;
+                case "TRANSFER":
+                    if (transaction.getFrom().equals(accountUUID)) {
+                        currentAmount -= transaction.getAmount();
+                    } else if (transaction.getTo().equals(accountUUID)) {
+                        currentAmount += transaction.getAmount();
+                    }
+                    break;
+                default:
+                    // Handle unsupported transaction types
+                    break;
+            }
         }
         return currentAmount;
     }
-
 
     List<Transactions> filterTransactionsByFrom(String fromPost) { ////////////
         List<Transactions> filteredTransactions = new ArrayList<>();
@@ -485,7 +559,7 @@ public class AccountController extends Jooby {
         List<Transactions> sanctionedTransactions = getSanctionedTransactions();
 
         // Aggregate transactions by business
-        Map<String, String> aggregatedReport = aggregateTransactionsByBusiness(sanctionedTransactions);
+        Map<String, Map<String, Object>> aggregatedReport = aggregateTransactionsByBusiness(sanctionedTransactions);
 
         // Render the report template with the aggregated data
         Template template = handlebars.compile("views/templates/sanctionedBusinessesReport");
@@ -524,28 +598,44 @@ public class AccountController extends Jooby {
         return sanctionedTransactions;
     }
 
-    private Map<String, String> aggregateTransactionsByBusiness(List<Transactions> transactions) {
-        Map<String, String> aggregatedReport = new HashMap<>();
-
-        DecimalFormat df = new DecimalFormat("0.00");
+    private Map<String, Map<String, Object>> aggregateTransactionsByBusiness(List<Transactions> transactions) {
+        Map<String, Map<String, Object>> aggregatedReport = new HashMap<>();
 
         for (Transactions transaction : transactions) {
             String businessId = transaction.getTo();
-            double amount = Math.round(transaction.getAmount() * 1) / 100.0;
             String businessName = getBusinessNameById(businessId);
-            String formattedAmount = df.format(amount);
 
-            if (aggregatedReport.containsKey(businessName)) {
-                double currentAmount = Double.parseDouble(aggregatedReport.get(businessName));
-                aggregatedReport.put(businessName, df.format(currentAmount + amount));
-            } else {
-                aggregatedReport.put(businessName, formattedAmount);
+            if (!aggregatedReport.containsKey(businessName)) {
+                aggregatedReport.put(businessName, new HashMap<>());
+                aggregatedReport.get(businessName).put("transactions", new ArrayList<Transaction>());
+                aggregatedReport.get(businessName).put("totalAmount", 0.0); // Initialize total amount to 0.0
+            }
+
+            List<Transactions> businessTransactions = (List<Transactions>) aggregatedReport.get(businessName).get("transactions");
+
+            // Check if the transaction ID has already been displayed
+            boolean isTransactionDisplayed = false;
+            for (Transactions displayedTransaction : businessTransactions) {
+                if (displayedTransaction.getId().equals(transaction.getId())) {
+                    isTransactionDisplayed = true;
+                    break;
+                }
+            }
+
+            // If the transaction is not displayed, add it to the list and update total amount
+            if (!isTransactionDisplayed) {
+                businessTransactions.add(transaction);
+                aggregatedReport.get(businessName).put("transactions", businessTransactions);
+                double amount = transaction.getAmount();
+                double currentAmount = (double) aggregatedReport.get(businessName).get("totalAmount");
+                aggregatedReport.get(businessName).put("totalAmount", currentAmount + amount);
             }
         }
 
         return aggregatedReport;
     }
-  @GET("/transactionsDetails")
+
+    @GET("/transactionsDetails")
   public String getTransactionDetailsPage(Context ctx) throws IOException {
       String transactionId = ctx.query("transactionId").value();
       Transactions transaction = findTransactionById(transactionId);
