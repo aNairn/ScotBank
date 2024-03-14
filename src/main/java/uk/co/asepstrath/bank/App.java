@@ -195,15 +195,20 @@ public class App extends Jooby {
         }
     }
     public static void importAccDataFromAPI(String apiUrl, String accessToken){
-
-
         try {
-            String apiResponse = new App().makeAuthenticatedAPICall(apiUrl, accessToken);
-            //Create HttpClient
+            // Create HttpClient
             HttpClient client = HttpClient.newHttpClient();
-            //Create GET request
-            HttpRequest request = HttpRequest.newBuilder().uri(URI.create(apiUrl)).header("Accept", "application/json").build();
-            //Send/Receive
+            String additionalInfo = "cardDetails,postcode";
+
+            // Create GET request with additional information query parameter
+            String fullUrl = apiUrl + "?include=" + additionalInfo;
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(fullUrl))
+                    .header("Accept", "application/json")
+                    .header("Authorization", "Bearer " + accessToken)
+                    .build();
+
+            // Send/Receive
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 200) {
@@ -217,18 +222,26 @@ public class App extends Jooby {
                     String name = accountJson.getString("name");
                     double startingBalance = accountJson.getDouble("startingBalance");
                     boolean roundUpEnabled = accountJson.getBoolean("roundUpEnabled");
+                    String location = accountJson.optString("postcode");
+
                     // Create an Account object using the constructor for API data
-                    Account account = new Account(UUID.fromString(id), name, startingBalance, roundUpEnabled);
-                    //System.out.println("Parsed JSON Array:\n" + jsonArray.get(i));
+                    Account account = new Account(UUID.fromString(id), name, startingBalance, roundUpEnabled, location);
 
                     // Add the account to your accounts list
                     accounts.add(account);
                     System.out.println("Adding account: " + accounts.get(i));
                 }
 
-                System.out.println("The Selected Account: " + accounts.get(2));
+                System.out.println("Top 10 Spendees and Their Locations:");
 
+                // Sort accounts by spending amount in descending order
+                accounts.sort(Comparator.comparingDouble(Account::getSpendingAmount).reversed());
 
+                // Display top 10 spenders and their locations
+                for (int i = 0; i < Math.min(10, accounts.size()); i++) {
+                    Account account = accounts.get(i);
+                    System.out.printf("%d. %s - %s%n", i + 1, account.getName(), account.getLocation());
+                }
             } else {
                 throw new Error("Failed to fetch data from the API. HTTP status code: " + response.statusCode());
             }
@@ -246,11 +259,6 @@ public class App extends Jooby {
     public static void main(final String[] args) {
         App app = new App();
         //importAccDataFromAPI("https://api.asep-strath.co.uk/api/accounts");
-
-
-
-
-
         runApp(args, App::new);
     }
 
@@ -260,7 +268,7 @@ public class App extends Jooby {
 
         importAccDataFromAPI("https://api.asep-strath.co.uk/api/accounts", accessToken);
         importTransactionDataFromAPI("https://api.asep-strath.co.uk/api/transactions", accessToken,100); //uses xml then need to parse it through
-         importBusinessDataFromAPI("https://api.asep-strath.co.uk/api/businesses", accessToken);
+        importBusinessDataFromAPI("https://api.asep-strath.co.uk/api/businesses", accessToken);
 
         //Get the accounts after importing from the API
         List<Account> accounts = getAccounts();
@@ -285,7 +293,7 @@ public class App extends Jooby {
 
         for (Account account : accounts) {
 
-            DataSource ds = (DataSource)this.require(DataSource.class);
+            DataSource ds = this.require(DataSource.class);
 
             try {
                 Connection connection = ds.getConnection();
