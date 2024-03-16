@@ -244,7 +244,7 @@ public class AccountController extends Jooby {
         return account;
     }*/
 
-    @POST("/")
+    /*@POST("/")
     public String getLogin(Context ctx) throws IOException {
        // String fromPost = ctx.form("username").value();
        // System.out.println(fromPost);
@@ -281,12 +281,12 @@ public class AccountController extends Jooby {
         ctx.setResponseType(MediaType.html);
         return html;
 
-    }
+    }*/
 
-    private static String formatAmount(double amount) {
+    /*private static String formatAmount(double amount) {
         DecimalFormat df = new DecimalFormat("0.00");
         return df.format(amount);
-    }
+    }*/
     private String getUserNameFromUUID(String uuid) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("SELECT name FROM Accounts WHERE id = ?")) {
@@ -421,7 +421,7 @@ public class AccountController extends Jooby {
         return transaction.getType().equals("DEPOSIT");
     }
 
-    private List<Transactions> getReceivedTransactions(List<Transactions> transactions, String accountUUID) {
+    /*private List<Transactions> getReceivedTransactions(List<Transactions> transactions, String accountUUID) {
         List<Transactions> receivedTransactions = new ArrayList<>();
         for (Transactions transaction : transactions) {
             if (transaction.getTo().equals(accountUUID)) {
@@ -429,7 +429,7 @@ public class AccountController extends Jooby {
             }
         }
         return receivedTransactions;
-    }
+    }*/
 
 
     private List<Transactions> getAllTransactionsInvolvingAccount(String accountUUID) {

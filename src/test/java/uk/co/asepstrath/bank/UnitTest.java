@@ -155,6 +155,4 @@ public class UnitTest {
                 """, html); // Replace "Expected HTML content here" with your expected HTML content
         assertEquals(MediaType.text.html, ctx.getResponseType());
     }
-
 }
-

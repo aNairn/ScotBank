@@ -67,9 +67,7 @@ public class Transactions {
         this.type = type;
     }
 
-    public String getAmountFormatted() {
-        return amountFormatted;
-    }
+    //public String getAmountFormatted() {return amountFormatted;}
 
     // Method to set the formatted amount
     public void setAmountFormatted() {
