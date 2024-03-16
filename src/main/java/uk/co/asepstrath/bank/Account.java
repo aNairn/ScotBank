@@ -5,15 +5,16 @@
 
 package uk.co.asepstrath.bank;
 
+import java.util.List;
 import java.util.UUID;
 
 public class Account {
-    private static Transaction[] transactionList;
     private UUID id;
     private String name;
     private double balance;
     private boolean roundUpEnabled;
     private String location;
+    private List<Transactions> transactionList;
 
     public Account(String name, double accountAmount) {
         this.name = name;
@@ -33,10 +34,6 @@ public class Account {
         this.balance = startingBalance;
         this.roundUpEnabled = roundUpEnabled;
         this.location = location;
-    }
-
-    public static void setTransactionList(Transaction[] transactionList) {
-        Account.transactionList = transactionList;
     }
 
     public void deposit(double amount) {
@@ -74,13 +71,20 @@ public class Account {
 
     public static double getSpendingAmount(Account account) {
         double spendingAmount = 0;
-
-        for (Transaction transaction : transactionList) {
-            // Check if the transaction is an expense (negative amount)
+        List<Transactions> transactionList = account.getTransactionList();
+        for (Transactions transaction : transactionList) {
             if (transaction.getAmount() < 0) {
                 spendingAmount += Math.abs(transaction.getAmount());
             }
         }
         return spendingAmount;
+    }
+
+    public void setTransactionList(List<Transactions> transactionList) {
+        this.transactionList = transactionList;
+    }
+
+    public List<Transactions> getTransactionList() {
+        return transactionList;
     }
 }

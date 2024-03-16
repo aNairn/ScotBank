@@ -234,14 +234,7 @@ public class App extends Jooby {
 
                 System.out.println("Top 10 Spendees and Their Locations:");
 
-                // Sort accounts by spending amount in descending order
-                accounts.sort(Comparator.comparingDouble(Account::getSpendingAmount).reversed());
-
-                // Display top 10 spenders and their locations
-                for (int i = 0; i < Math.min(10, accounts.size()); i++) {
-                    Account account = accounts.get(i);
-                    System.out.printf("%d. %s - %s%n", i + 1, account.getName(), account.getLocation());
-                }
+                System.out.println(Account.getSpendingAmount(accounts.get(1)));
             } else {
                 throw new Error("Failed to fetch data from the API. HTTP status code: " + response.statusCode());
             }
@@ -277,6 +270,16 @@ public class App extends Jooby {
             System.out.println(account);
         }
 
+        // Set transaction list for each account
+        for (Account account : accounts) {
+            List<Transactions> accountTransactions = new ArrayList<>();
+            for (Transactions transaction : transactionsList) {
+                if (transaction.getFrom().equals(account.getId().toString()) || transaction.getTo().equals(account.getId().toString())) {
+                    accountTransactions.add(transaction);
+                }
+            }
+            account.setTransactionList(accountTransactions);
+        }
 
         System.out.println("transactions after importing from API:");
         for(Transactions transactions : transactionsList){
