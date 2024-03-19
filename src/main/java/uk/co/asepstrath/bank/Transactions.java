@@ -74,7 +74,9 @@ public class Transactions {
         DecimalFormat df = new DecimalFormat("0.00");
         this.amountFormatted = df.format(this.amount);
     }
-
+    public String getAmountFormatted() {
+        return amountFormatted;
+    }
     @Override
     public String toString() {
         return "Transaction{" +

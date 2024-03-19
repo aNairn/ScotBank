@@ -51,6 +51,7 @@ public class AccountController extends Jooby {
 
     }
 
+
     public Handlebars getHandlebars() {
         return this.handlebars;
     }
@@ -208,86 +209,7 @@ public class AccountController extends Jooby {
         return sortCode.toString();
     }
 
-
-   // @GET({"/accounts"})
-   // public List<Account> getAccounts() {
-       // return accounts;
-    //}
-
-  /*  @GET({"/accounts"})
-    public List<Map<String, String>> getAccounts() {
-        List<Map<String, String>> accountsFromDB = new ArrayList<>();
-
-        try (Connection connection = dataSource.getConnection()) {
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM Example");
-
-            while (resultSet.next()) {
-                Map<String, String> account = new HashMap<>();
-                account.put("key", resultSet.getString("Key"));
-                account.put("value", resultSet.getString("Value"));
-                accountsFromDB.add(account);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return accountsFromDB;
-    }
-*/
-
-    /*
-    @POST({"/accounts"})
-    public Account createAccount(@QueryParam String name, @QueryParam double accountAmount) {
-        Account account = new Account(name, accountAmount);
-        this.accounts.add(account);
-        return account;
-    }*/
-
-    /*@POST("/")
-    public String getLogin(Context ctx) throws IOException {
-       // String fromPost = ctx.form("username").value();
-       // System.out.println(fromPost);
-       // Template template = handlebars.compile("views/templates/homepage");
-
-
-       // String html = template.apply(fromPost);
-
-        // Set response type and return HTML
-       // ctx.setResponseType(MediaType.text.html);
-       // return html;
-
-       // ~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-        //new one to get name from login
-
-        String fromPost = ctx.form("username").value();
-        System.out.println("Submitted username: " + fromPost); // Add this line for debugging
-
-        // Check if the user is the manager
-
-
-
-        // Retrieve user's name from the database based on UUID
-        String username = getUserNameFromUUID(fromPost);
-
-        // Pass the retrieved name to the homepage template
-        Template template = handlebars.compile("views/templates/homepage");
-        Map<String, Object> model = new HashMap<>();
-        model.put("fromPost", username);
-        String html = template.apply(model);
-
-        // Set response type and return HTML
-        ctx.setResponseType(MediaType.html);
-        return html;
-
-    }*/
-
-    /*private static String formatAmount(double amount) {
-        DecimalFormat df = new DecimalFormat("0.00");
-        return df.format(amount);
-    }*/
-    private String getUserNameFromUUID(String uuid) {
+    String getUserNameFromUUID(String uuid) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("SELECT name FROM Accounts WHERE id = ?")) {
 
@@ -397,7 +319,7 @@ public class AccountController extends Jooby {
         return html;
     }
 
-    private List<Transactions> getOutgoingTransactions(List<Transactions> transactions, String accountUUID) {
+    List<Transactions> getOutgoingTransactions(List<Transactions> transactions, String accountUUID) {
         List<Transactions> outgoingTransactions = new ArrayList<>();
         for (Transactions transaction : transactions) {
             if (transaction.getFrom().equals(accountUUID) && !isDeposit(transaction)) {
@@ -407,7 +329,7 @@ public class AccountController extends Jooby {
         return outgoingTransactions;
     }
 
-    private List<Transactions> getIncomingTransactions(List<Transactions> transactions, String accountUUID) {
+    List<Transactions> getIncomingTransactions(List<Transactions> transactions, String accountUUID) {
         List<Transactions> incomingTransactions = new ArrayList<>();
         for (Transactions transaction : transactions) {
             if (transaction.getTo().equals(accountUUID) && !isDeposit(transaction)) {
@@ -421,18 +343,9 @@ public class AccountController extends Jooby {
         return transaction.getType().equals("DEPOSIT");
     }
 
-    /*private List<Transactions> getReceivedTransactions(List<Transactions> transactions, String accountUUID) {
-        List<Transactions> receivedTransactions = new ArrayList<>();
-        for (Transactions transaction : transactions) {
-            if (transaction.getTo().equals(accountUUID)) {
-                receivedTransactions.add(transaction);
-            }
-        }
-        return receivedTransactions;
-    }*/
 
 
-    private List<Transactions> getAllTransactionsInvolvingAccount(String accountUUID) {
+    List<Transactions> getAllTransactionsInvolvingAccount(String accountUUID) {
         List<Transactions> relevantTransactions = new ArrayList<>();
         for (Transactions transaction : transactions) {
             if (transaction.getFrom().equals(accountUUID) || transaction.getTo().equals(accountUUID)) {
@@ -442,7 +355,7 @@ public class AccountController extends Jooby {
         return relevantTransactions;
     }
 
-    private double calculateCurrentAmount(double startingAmount, List<Transactions> transactions, String accountUUID) {
+    double calculateCurrentAmount(double startingAmount, List<Transactions> transactions, String accountUUID) {
         double currentAmount = startingAmount;
         for (Transactions transaction : transactions) {
             String transactionType = transaction.getType();
@@ -484,6 +397,10 @@ public class AccountController extends Jooby {
         return filteredTransactions;
     }
 
+    protected Connection getConnection() throws SQLException {
+        return dataSource.getConnection();
+    }
+
     @GET("/spending")
     public String getSpendingPage(Context ctx) throws IOException {
         String username = ctx.session().get("fromPost").value();
@@ -506,7 +423,7 @@ public class AccountController extends Jooby {
         return html;
     }
 
-    private Map<String, Double> calculateSpendingSummary(String username) {
+    Map<String, Double> calculateSpendingSummary(String username) {
         Map<String, Double> spendingSummary = new HashMap<>();
 
         try (Connection connection = dataSource.getConnection()) {
@@ -532,28 +449,8 @@ public class AccountController extends Jooby {
         return spendingSummary;
     }
 
-    @POST("/roundup")
-    public void toggleRoundUp(Context ctx) {
-        boolean roundUpEnabled = ctx.body().booleanValue();
-        String username = ctx.session().get("fromPost").value();
 
-        // Update round-up status in the database
-        updateRoundUpStatus(username, roundUpEnabled);
-    }
-
-    void updateRoundUpStatus(String username, boolean roundUpEnabled) {
-        try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Accounts SET roundUpEnabled = ? WHERE id = ?");
-            preparedStatement.setBoolean(1, roundUpEnabled);
-            preparedStatement.setString(2, username);
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            //e.printStackTrace();
-            System.out.println("Error connecting to database");
-        }
-    }
-
-    @GET("/bigspenders")
+    @GET("/sanctionBusiness")
     public String getSanctionedBusinessesReport(Context ctx) throws IOException {
         // Fetch all transactions related to sanctioned businesses
         List<Transactions> sanctionedTransactions = getSanctionedTransactions();
@@ -573,7 +470,7 @@ public class AccountController extends Jooby {
         return html;
     }
 
-    private List<Transactions> getSanctionedTransactions() {
+    List<Transactions> getSanctionedTransactions() {
         List<Transactions> sanctionedTransactions = new ArrayList<>();
 
         try (Connection connection = dataSource.getConnection()) {
@@ -598,7 +495,7 @@ public class AccountController extends Jooby {
         return sanctionedTransactions;
     }
 
-    private Map<String, Map<String, Object>> aggregateTransactionsByBusiness(List<Transactions> transactions) {
+    Map<String, Map<String, Object>> aggregateTransactionsByBusiness(List<Transactions> transactions) {
         Map<String, Map<String, Object>> aggregatedReport = new HashMap<>();
 
         for (Transactions transaction : transactions) {
@@ -673,5 +570,7 @@ public class AccountController extends Jooby {
         }
         return null; // Return null if business not found
     }
+
+
 
 }

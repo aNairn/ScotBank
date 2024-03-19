@@ -61,7 +61,20 @@ class TransactionTest {
         // Assert
         assertEquals(expectedAmount, actualAmount, 0.001); // Using delta for double comparison
     }
+    @Test
+    public void testGetAmountFormatted() {
+        // Create a Transactions object with a known amount
+        Transactions transaction = new Transactions("2024-03-19", 123.456, "sender", "1", "receiver", "PAYMENT");
 
+        // Call the setAmountFormatted method
+        transaction.setAmountFormatted();
+
+        // Call the getAmountFormatted method
+        String formattedAmount = transaction.getAmountFormatted();
+
+        // Check if the formatted amount matches the expected value
+        assertEquals("123.46", formattedAmount); // The expected value depends on how you want to round the amount
+    }
     @Test
     public void getCategory() {
         // Arrange
