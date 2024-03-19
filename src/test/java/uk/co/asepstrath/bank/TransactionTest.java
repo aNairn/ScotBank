@@ -2,6 +2,9 @@ package uk.co.asepstrath.bank;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class TransactionTest {
@@ -269,4 +272,62 @@ class TransactionTest {
         // Verify that the property has been set correctly
         assertEquals(testType, transactions.getType());
     }
+
+    @Test
+    void testGetOutgoingTransactions() {
+        Transactions transaction1 = new Transactions("", 10, "fromAccount1","","toAccount1","DEPOSIT");
+        Transactions transaction2 = new Transactions("",10,"fromAccount1","", "toAccount2", "WITHDRAW");
+        Transactions transaction3 = new Transactions("",10,"fromAccount2","", "toAccount1", "WITHDRAW");
+
+        List<Transactions> transactions = new ArrayList<>();
+        transactions.add(transaction1);
+        transactions.add(transaction2);
+        transactions.add(transaction3);
+
+        AccountController transactionsProcessor = new AccountController(null,null,null,null,null);
+
+        List<Transactions> outgoingTransactions = transactionsProcessor.getOutgoingTransactions(transactions, "fromAccount1");
+
+        assertEquals(1, outgoingTransactions.size());
+        assertEquals(transaction2, outgoingTransactions.get(0));
+    }
+
+    @Test
+    void testGetIncomingTransactions() {
+        Transactions transaction1 = new Transactions("", 10, "fromAccount1","","toAccount1","DEPOSIT");
+        Transactions transaction2 = new Transactions("",10,"fromAccount1","", "toAccount2", "WITHDRAW");
+        Transactions transaction3 = new Transactions("",10,"fromAccount2","", "toAccount1", "WITHDRAW");
+
+        List<Transactions> transactions = new ArrayList<>();
+        transactions.add(transaction1);
+        transactions.add(transaction2);
+        transactions.add(transaction3);
+
+        AccountController transactionsProcessor = new AccountController(null,null,null,null,null);
+
+        List<Transactions> incomingTransactions = transactionsProcessor.getIncomingTransactions(transactions, "toAccount1");
+
+        assertEquals(1, incomingTransactions.size());
+        assertEquals(transaction3, incomingTransactions.get(0));
+    }
+
+    /*@Test
+    void testGetAllTransactionsInvolvingAccount() {
+        Transactions transaction1 = new Transactions("", 10, "fromAccount1","","toAccount1","DEPOSIT");
+        Transactions transaction2 = new Transactions("",10,"fromAccount1","", "toAccount2", "WITHDRAW");
+        Transactions transaction3 = new Transactions("",10,"fromAccount2","", "toAccount1", "WITHDRAW");
+
+        List<Transactions> transactions = new ArrayList<>();
+        transactions.add(transaction1);
+        transactions.add(transaction2);
+        transactions.add(transaction3);
+
+        AccountController transactionsProcessor = new AccountController(null,null,null,null,null);
+
+        List<Transactions> allTransactions = transactionsProcessor.getAllTransactionsInvolvingAccount("fromAccount1");
+
+        assertEquals(2, allTransactions.size());
+        assertEquals(transaction1, allTransactions.get(0));
+        assertEquals(transaction2, allTransactions.get(1));
+    }*/
 }
