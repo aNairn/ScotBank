@@ -13,6 +13,7 @@
           overflow: auto;
           display: flex;
           justify-content: center;
+          role: navigation; /* Added role for semantic meaning */
         }
 
         /* Navigation links */
@@ -90,10 +91,10 @@
 </head>
 <body>
 
-<div class="navbar" role="navigation">
-    <a href="/homepage" aria-label="Account">Account</a>
-    <a href="/transactions" class="active" aria-label="Transactions">Transactions</a>
-    <a href="/spending" aria-label="Spending">Spending</a>
+<div class="navbar" role="navigation" aria-label="Main Navigation">
+    <a href="/homepage" aria-label="Account" tabindex="0">Account</a>
+    <a href="/transactions" class="active" aria-label="Transactions" tabindex="0">Transactions</a>
+    <a href="/spending" aria-label="Spending" tabindex="0">Spending</a>
     <a href="/" tabindex="0" id="logout-button">Logout</a>
 </div>
 

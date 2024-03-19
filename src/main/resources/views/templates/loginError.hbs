@@ -67,9 +67,9 @@
 <div class="container">
     <h2>SCOTBANK</h2>
     <form action="/login" method="post">
-        <div class="form-group">
-            <div id="login">
-                <label for="username">ERROR: Please enter in a valid username</label>
+        <div class="form-group" role="alert">
+            <div id="login" aria-live="assertive">
+                <p aria-labelledby="error-msg">ERROR: Please enter a valid username</p>
             </div>
         </div>
 
