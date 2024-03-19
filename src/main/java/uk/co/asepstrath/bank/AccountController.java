@@ -442,6 +442,7 @@ public class AccountController extends Jooby {
 
     Map<String, Double> calculateSpendingSummary(String username) {
         Map<String, Double> spendingSummary = new HashMap<>();
+        PreparedStatement preparedStatement = null;
 
         try (Connection connection = dataSource.getConnection()) {
             String sql = "SELECT b.category, SUM(t.amount) AS totalAmount " +
@@ -449,7 +450,7 @@ public class AccountController extends Jooby {
                     "JOIN businesses b ON t.receiver = b.id " +
                     "WHERE t.sender = ? " +
                     "GROUP BY b.category";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, username);
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -461,6 +462,15 @@ public class AccountController extends Jooby {
         } catch (SQLException e) {
             //e.printStackTrace();
             System.out.println("Error connecting to database");
+        }finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    // Handle exception if unable to close PreparedStatement
+                    System.out.println("Error closing PreparedStatement");
+                }
+            }
         }
 
         return spendingSummary;
