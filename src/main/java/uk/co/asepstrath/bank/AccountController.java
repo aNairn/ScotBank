@@ -265,11 +265,28 @@ public class AccountController extends Jooby {
             String errorMessage = "Error: Username cannot be empty and must be in database";
             ctx.setResponseType(MediaType.TEXT);
             ctx.setResponseCode(StatusCode.BAD_REQUEST);
-            ctx.send(errorMessage);
+            ctx.sendRedirect("/loginError");
+           // ctx.send(errorMessage);
+           // ctx.sendRedirect("/loginError");
+
         }
     }
 
-    private boolean validateUUID(String providedUUID) {
+    @GET("/loginError")
+    public String getLoginError(Context ctx) throws IOException {
+        Template template = handlebars.compile("views/templates/loginError");
+
+
+        String html = template.apply(accounts);
+
+        // Set response type and return HTML
+        ctx.setResponseType(MediaType.html);
+        return html;
+    }
+
+
+
+        private boolean validateUUID(String providedUUID) {
         try (Connection connection = dataSource.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM Accounts WHERE id = ?")) {
             preparedStatement.setString(1, providedUUID);
             ResultSet resultSet = preparedStatement.executeQuery();
