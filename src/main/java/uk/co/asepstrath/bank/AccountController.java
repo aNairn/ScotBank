@@ -397,7 +397,7 @@ public class AccountController extends Jooby {
         return html;
     }
 
-    private List<Transactions> getOutgoingTransactions(List<Transactions> transactions, String accountUUID) {
+    List<Transactions> getOutgoingTransactions(List<Transactions> transactions, String accountUUID) {
         List<Transactions> outgoingTransactions = new ArrayList<>();
         for (Transactions transaction : transactions) {
             if (transaction.getFrom().equals(accountUUID) && !isDeposit(transaction)) {
@@ -407,7 +407,7 @@ public class AccountController extends Jooby {
         return outgoingTransactions;
     }
 
-    private List<Transactions> getIncomingTransactions(List<Transactions> transactions, String accountUUID) {
+    List<Transactions> getIncomingTransactions(List<Transactions> transactions, String accountUUID) {
         List<Transactions> incomingTransactions = new ArrayList<>();
         for (Transactions transaction : transactions) {
             if (transaction.getTo().equals(accountUUID) && !isDeposit(transaction)) {
@@ -432,7 +432,7 @@ public class AccountController extends Jooby {
     }*/
 
 
-    private List<Transactions> getAllTransactionsInvolvingAccount(String accountUUID) {
+    List<Transactions> getAllTransactionsInvolvingAccount(String accountUUID) {
         List<Transactions> relevantTransactions = new ArrayList<>();
         for (Transactions transaction : transactions) {
             if (transaction.getFrom().equals(accountUUID) || transaction.getTo().equals(accountUUID)) {
