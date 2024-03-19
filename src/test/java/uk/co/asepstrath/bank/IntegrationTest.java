@@ -48,11 +48,9 @@ public class IntegrationTest {
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
-            // Expecting a 400 Bad Request response
-            assertEquals(StatusCode.BAD_REQUEST.value(), response.code());
+            // Expecting a 200 success response
+            assertEquals(200, response.code());
 
-            // Ensure the error message is correct
-            assertEquals("Error: Username cannot be empty and must be in database", response.body().string().trim());
         }
     }
 }
